@@ -6,7 +6,10 @@
 + Days: Monday, Wednesday
 + Times: 14:30 - 15:45
 + Location: ITE 127
-+ Team: Shiying Xiao (shiying.xiao@uconn.edu), Xiaohui Yin (xiaohui.yin@uconn.edu)
++ Team:
+  - Xiaohui Yin (xiaohui.yin@uconn.edu)
+  - Shiying Xiao (shiying.xiao@uconn.edu)
+  - Xiaohang Ma (xiaohang.ma@uconn.edu)
 
 ## Course Project
 
