@@ -51,29 +51,22 @@
 
 ****
 ### Data and Task
+#### Project Goal  
+The goal of this project is to integrate powerful deep neural networks and statistical methods with a Probabilistic Graphical Model (PGM) to address sequence labeling tasks on a heterogeneous medical care dataset.
 
-#### Project Goal
-In this project, we will combine the powerful deep neural networks and statistical methods with 
-Probabilistic Graphical Model(PGM) to solve sequence labeling task on heterogeneous medical care dataset.
+---
 
-#### Reference Paper
-- Bidirectional LSTM-CRF Models for Sequence Tagging:
-  - This paper belongs to one of the earliest successful attempts on deep learning based CRF for sequence labeling. We 
-    bring the core idea from this work that generating features and potential functions of CRF model from 
-    deep neural networks. In this paper, the authors choose Bi-LSTM for feature extraction, however, we will
-    apply modern state-of-the-art large neural network models like BERT on more complicated datasets.
-  
-- Efficient Inference in Fully Connected CRFs with Gaussian Edge Potentials:
-  - Since most CRF model does not meet an efficient closed form solutions, except some special case like
-    linear chain CRF. Thus, we will use the mean-field approximation for solving more general CRF models associated with
-    more complex prediction task. By setting the KL divergence as the loss function, the mean-field approximation will 
-    be reduced as a fixed point iteration, which leads to a faster way to learn and inference CRF models with a proper 
-    accuracy.
+##### Reference Papers
 
-- Conditional Random Fields as Recurrent Neural Networks
-  - In this paper, the mean field approximation of fully connected CRF was reformulated by a CNN-RNN structure. Thus, 
-    for practical computation task, we can use advanced toolbox for deep learning such as tensorflow or pytorch to 
-    accelerate our computing procedure.
+##### 1. Bidirectional LSTM-CRF Models for Sequence Tagging  
+This paper represents one of the earliest successful applications of deep learning combined with CRF models for sequence labeling. We adopt the core idea from this work, where features and potential functions of a CRF model are generated using deep neural networks. While the authors use a Bi-LSTM architecture for feature extraction, we will leverage modern, state-of-the-art large neural network models like BERT to handle more complex datasets.
+
+##### 2. Efficient Inference in Fully Connected CRFs with Gaussian Edge Potentials  
+Most CRF models, aside from certain special cases like linear-chain CRFs, do not have efficient closed-form solutions. To address this, we will employ mean-field approximation for solving more general CRF models in the context of complex prediction tasks. By minimizing the KL divergence as the loss function, the mean-field approximation can be reduced to a fixed-point iteration, providing a faster and more efficient way to train and infer CRF models while maintaining appropriate accuracy.
+
+##### 3. Conditional Random Fields as Recurrent Neural Networks  
+This paper reformulates the mean-field approximation for fully connected CRFs using a CNN-RNN structure. For practical purposes, we can utilize advanced deep learning frameworks such as TensorFlow or PyTorch to accelerate the computation process, allowing us to efficiently solve complex CRF models in large-scale tasks.
+
 
 
 #### Data Source
