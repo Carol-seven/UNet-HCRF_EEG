@@ -1,0 +1,130 @@
+\documentclass[conference]{IEEEtran}
+
+\usepackage{amsfonts,amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{natbib}
+
+%notations
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{exm}[thm]{Example}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{rem}[thm]{Remark}
+
+\newcommand{\corref}[1]{Corollary~{\rm \ref{#1}}}
+\newcommand{\defref}[1]{Definition~{\rm \ref{#1}}}
+\newcommand{\exmref}[1]{Example~{\rm \ref{#1}}}
+\newcommand{\lemref}[1]{Lemma~{\rm \ref{#1}}}
+\newcommand{\propref}[1]{Proposition~{\rm \ref{#1}}}
+\newcommand{\prpropref}[1]{Proposition~{\bf \ref{#1}}}
+\newcommand{\remref}[1]{Remark~{\rm \ref{#1}}}
+\newcommand{\thmref}[1]{Theorem~{\rm \ref{#1}}}
+\newcommand{\ththmref}[1]{Theorem~{\bf \ref{#1}}}
+
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+\newcommand{\beq}[1]{\begin{equation} \label{#1}}
+	\newcommand{\eeq}{\end{equation}}
+\newcommand{\bea}{\bed\begin{array}{rl}}
+	\newcommand{\eea}{\end{array}\eed}
+\newcommand{\bed}{\begin{displaymath}}
+	\newcommand{\eed}{\end{displaymath}}
+\newcommand{\barray}{\begin{array}{ll}}
+	\newcommand{\earray}{\end{array}}
+
+\newcommand{\aad}{&\disp}
+\newcommand{\ad}{&\!\!\!\disp}
+\newcommand{\al}{\alpha}
+\newcommand{\be}{\beta}
+\newcommand{\disp}{\displaystyle}
+\newcommand{\dl}{\delta}
+\newcommand{\E}{{\mathbb E}}
+\newcommand{\e}{\varepsilon}
+\newcommand{\ee}{\Delta}
+\newcommand{\la}{\lambda}
+\newcommand{\PP}{{\mathbb P}}
+\newcommand{\nd}{\noindent}
+\newcommand{\sg}{\sigma}
+
+
+\newcommand{\NM}{{\rm NM}}
+\newcommand{\AM}{{\rm AM}}
+
+\newcommand{\A}{{\cal A}}
+\newcommand{\F}{{\cal F}}
+\newcommand{\I}{{\cal I}}
+\newcommand{\M}{{\cal M}}
+\newcommand{\U}{{\cal U}}
+\newcommand{\X}{{\cal X}}
+\newcommand{\II}{{\cal I}}
+\newcommand{\HH}{{\cal H}}
+
+\newcommand{\bdd}{\hspace*{-0.08in}{\bf.}\hspace*{0.05in}}
+
+\newcommand{\lbar}{\overline}
+\newcommand{\wdt}{\widetilde}
+\newcommand{\wdh}{\widehat}
+\newcommand{\diag}{{\rm diag}}
+\def\th{\theta}
+\def\para#1{\vskip 0.4\baselineskip\noindent{\bf #1}}
+\def\paraa#1{\vskip 0.4\baselineskip\noindent{\sf #1}}
+
+\def\rr{{\Bbb R}}
+\def\({\left(}
+\def\){\right)}
+\def\one{{\hbox{1{\kern -0.35em}1}}}
+\def\op{{\cal L}}
+
+\def\gg{{\cal G}}
+\def\sth{\sum^2_{\th=1}}
+
+
+\begin{document}
+
+\title{CSE 5830 Course Project Proposal}
+
+\author{\IEEEauthorblockN{Xiaohang Ma}
+\IEEEauthorblockA{\textit{Department of Mathematics} \\
+\textit{University of Connecticut}\\
+Storrs, CT, USA \\
+xiaohang.ma@uconn.edu}
+\and
+\IEEEauthorblockN{Shiying Xiao}
+\IEEEauthorblockA{\textit{Department of Statistics} \\
+\textit{University of Connecticut}\\
+Storrs, CT, USA \\
+shiying.xiao@uconn.edu}
+\and
+\IEEEauthorblockN{Xiaohui Yin}
+\IEEEauthorblockA{\textit{Department of Statistics} \\
+\textit{University of Connecticut}\\
+Storrs, CT, USA \\
+xiaohui.yin@uconn.edu}
+}
+
+\maketitle
+
+\begin{abstract}
+In this project, we will integrate powerful deep neural networks and
+statistical methods with a probabilistic graphical model (PGM) to effectively
+tackle sequence labeling tasks on a heterogeneous medical care dataset.
+\end{abstract}
+
+
+\begin{IEEEkeywords}
+probabilistic graphical model
+\end{IEEEkeywords}
+
+
+\section{Introduction}
+
+\citep{huang2015bidirectional}
+
+
+\bibliographystyle{plain}
+\bibliography{refs}
+
+\end{document}
