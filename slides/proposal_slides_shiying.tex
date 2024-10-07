@@ -1,0 +1,225 @@
+\documentclass[leqno]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+
+\usepackage[linesnumbered,algoruled,boxed,lined]{algorithm2e}
+\usepackage{amsfonts,amsmath,amsthm}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{color}
+\usepackage{graphicx}
+\graphicspath{{./}{../image/}} % graphic path
+\usepackage{hyperref}
+\hypersetup{colorlinks,citecolor=blue,linkcolor=[RGB]{50,50,172}}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage[authoryear]{natbib}
+\usepackage{setspace}
+\usepackage{soul}
+\usepackage{textpos}
+\usepackage{tikz}
+
+%% notations
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\bmI}{\bm{I}}
+\newcommand{\bmOmega}{\bm{\Omega}}
+\newcommand{\bmSigma}{\bm{\Sigma}}
+\newcommand{\bmS}{\bm{S}}
+\newcommand{\bmW}{\bm{W}}
+\newcommand{\bmX}{\bm{X}}
+\newcommand{\bmY}{\bm{Y}}
+\newcommand{\bmZ}{\bm{Z}}
+\newcommand{\bmbeta}{\bm{\beta}}
+\newcommand{\hatbmOmega}{\hat{\bm{\Omega}}}
+\newcommand{\tr}{\text{tr}}
+\DeclareMathOperator*{\argmin}{arg \, min}
+
+% consistent with R manual
+\newcommand\pkg[1]{\texttt{#1}}
+\let\proglang=\textsf \let\code=\texttt
+
+\setbeamercovered{transparent}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{enumerate item}[default]
+\setbeamertemplate{itemize item}[circle]
+\setbeamertemplate{section in toc}[default]
+\setbeamertemplate{subsection in toc}[default]
+
+%\AtBeginSection[]{
+%\begin{frame}<beamer>{Overview}
+%\tableofcontents[currentsection]
+%\end{frame}}
+
+
+\title[\textcolor{black}{HBAC}]{
+{\bf \normalsize Harmful Brain Activity Classification}}
+%\subtitle[]{}
+\author[Shiying Xiao]{Shiying Xiao}
+\institute[UConn]{Department of Statistics, University of Connecticut}
+\date[October 7, 2024]{
+{\small Storrs, CT} \\
+{\small October 7, 2024}}
+
+\begin{document}
+
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+\addtobeamertemplate{frametitle}{}{
+\begin{textblock*}{70mm}(.9\textwidth,-0.65cm)
+\includegraphics[width=.2\textwidth]{uconn-wordmark-single-blue.png}
+\end{textblock*}}
+
+
+%\begin{frame}
+%\frametitle{Overview}
+%\tableofcontents
+%\end{frame}
+
+
+%\section[Introduction]{Introduction}
+
+%\begin{frame}
+%\frametitle{Data Description}
+%\begin{itemize}
+%\item This dataset contains electroencephalography (EEG) signals from hospital
+%patients, collected by Harvard Medical School. It was originally part of a
+%Kaggle competition that ended on April 8, 2024.
+%\bigskip
+%\item The goal of analyzing this dataset is to detect six patterns of harmful
+%brain activity, including seizure (SZ), generalized periodic discharges (GPD),
+%lateralized periodic discharges (LPD), lateralized rhythmic delta activity
+%(LRDA), and generalized rhythmic delta activity (GRDA).
+%\end{itemize}
+%\end{frame}
+
+
+\begin{frame}
+\frametitle{Overview of the Problem}
+\begin{itemize}
+\item Electroencephalography (EEGs) detect brain signals but are time-consuming
+to interpret manually.
+\bigskip
+\item This competition aims to automate detection of harmful brain activity.
+\bigskip
+\item Targeted areas: neurocritical care, epilepsy treatment, and
+drug development.
+%\item Detect and classify harmful brain activities from EEG signals.
+%\bigskip
+%\item Potential to improve neurocritical care.
+%\bigskip
+%\item Key target: Seizures and other harmful brain activities.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Types of Harmful Brain Activities}
+\begin{itemize}
+\item Seizures (SZ)
+\bigskip
+\item Generalized Periodic Discharges (GPD)
+\bigskip
+\item Lateralized Periodic Discharges (LPD)
+\bigskip
+\item Lateralized Rhythmic Delta Activity (LRDA)
+\bigskip
+\item Generalized Rhythmic Delta Activity (GRDA)
+\bigskip
+\item ``Other'' types of harmful brain activity
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Dataset Overview}
+\begin{itemize}
+\item EEG Time Series Data: 50-second windows of brain activity.
+\bigskip
+\item Spectrogram Data: Frequency information of brain activity.
+\bigskip
+\item Features derived from both datasets help in classification tasks.
+\end{itemize}
+\end{frame}
+%\begin{frame}
+%\frametitle{Dataset Overview}
+%\begin{itemize}
+%\item EEG Time Series Data: 50-second windows of EEG data sampled at 200 Hz,
+%with signals from 19 electrodes.
+%\bigskip
+%\item Spectrogram Data: Frequency content from longer EEG windows, aiding in
+%understanding rhythmic brain activity.
+%\end{itemize}
+%\end{frame}
+
+
+\begin{frame}
+\frametitle{Extracted Features}
+\begin{itemize}
+\item Relative Band Powers
+\bigskip
+\item Spectral Edge Frequency
+\bigskip
+\item Hjorth Parameters (Mobility and Complexity)
+\bigskip
+\item Statistical Measures: Mean, Standard Deviation, Skewness, Kurtosis.
+\end{itemize}
+\end{frame}
+
+
+%\begin{frame}
+%\frametitle{Data Preprocessing}
+%\begin{itemize}
+%\item Filter out noise: Only keep frequencies between 0.5-40 Hz.
+%%Filter EEG signals: Remove noise outside 0.5–40 Hz range.
+%\bigskip
+%\item Focus on the middle 10 seconds of each 50-second window.
+%\bigskip
+%\item Generate time and frequency-based features for analysis.
+%\end{itemize}
+%\end{frame}
+
+
+\begin{frame}
+\frametitle{Potential Impact}
+\begin{itemize}
+\item Automated EEG analysis saves time and reduces errors.
+%%Automating EEG analysis will help reduce manual workload.
+\bigskip
+\item Quick and accurate detection of brain damage can improve patient outcomes.
+%%Quick and accurate detection of brain damage can save lives.
+\bigskip
+\item Significant impact on epilepsy treatment, neurocritical care,
+and drug development.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Conclusion}
+\begin{itemize}
+\item The dataset offers rich information for detecting harmful brain activity.
+\bigskip
+\item Automating harmful brain activity detection can revolutionize
+neurocritical care.
+\bigskip
+\item Encourages further exploration of EEG and spectrogram data to
+improve classification models.
+\end{itemize}
+\end{frame}
+
+
+%\begin{frame}[allowframebreaks]
+%\frametitle{References}
+%\bibliographystyle{plain}
+%\bibliography{bib}
+%\end{frame}
+
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
