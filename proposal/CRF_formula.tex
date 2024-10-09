@@ -1,0 +1,208 @@
+\documentclass{article}
+
+\usepackage{mathrsfs}
+\usepackage{calligra}
+% \usepackage{algorithm}
+% \usepackage{algpseudocode}
+% \usepackage{algorithm2e}
+% \usepackage{algorithmicx}
+\usepackage{multicol}
+\usepackage{amsmath}  % Ensure amsmath is loaded
+\usepackage{amssymb}  % Load amssymb for additional math symbols
+\def\X{\mathbb{X}}
+\newcommand{\C}{C([-\tau, 0]: \rr^r)}
+\newcommand{\B}{{\mathscr B}}
+\newcommand{\D}{{\mathscr D}}
+\newcommand{\Var}{{{\mathbb V}\rm ar}}
+\newcommand{\Cov}{{{\mathbb C}\rm ov}}
+\newcommand{\jj}{\jmath}
+\newcommand{\DD}{\mathbb{D}}
+\newcommand{\sg}{\sigma}
+\newcommand{\sgn}{{\operatorname{sgn}}}
+\newcommand{\Sg}{{\operatorname{Sgn}}}
+\def\clG{{\mathcal G}}
+\newcommand{\wh}{{\wdh W}}
+\newcommand{\Ga}{\Gamma}
+%\newcommand{\sg}{\sigma}
+\newcommand{\one}{{\rm 1}\hspace*{-0.035in}{\rm l}}
+\newcommand{\diag}{{\rm diag}}
+\newcommand{\lbar}{\overline}
+\newcommand{\wdh}{\widehat}
+\newcommand{\lf}{\lfloor}
+\newcommand{\rf}{\rfloor}
+\newcommand{\dl}{\delta}
+\newcommand{\ga}{\gamma}
+\newcommand{\ps}{\psi}
+\newcommand{\Dl}{\Delta}
+\newcommand{\la}{\lambda}
+\def\op{{\cal L}}
+\def\l{\left|}
+\def\r{\right|}
+\newcommand{\mz}{{m}}
+\newcommand{\F}{{\cal F}}
+\newcommand{\U}{{\cal U}}
+\newcommand{\wdt}{\widetilde}
+\newcommand{\e}{\varepsilon}
+\newcommand{\rr}{{\mathbb R}}
+\newcommand{\M}{{\cal M}}
+\newcommand{\cd}{(\cdot)}
+\newcommand{\nd}{\noindent}
+\newcommand{\tr}{{\rm tr}}
+\def\para#1{\vskip .25\baselineskip\noindent{\bf #1}}
+\def\qed{\strut\hfill $\Box$}
+\def\eqdef {\stackrel {\rm def}{=}}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{rem}[thm]{Remark}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{exm}[thm]{Example}
+\newtheorem{asm}{Assumption}
+% \newtheorem{algorithm}{Algorithm}
+\newcommand{\thmref}[1]{Theorem~{\rm \ref{#1}}}
+\newcommand{\lemref}[1]{Lemma~{\rm \ref{#1}}}
+\newcommand{\corref}[1]{Corollary~{\rm \ref{#1}}}
+\newcommand{\propref}[1]{Proposition~{\rm \ref{#1}}}
+\newcommand{\defref}[1]{Definition~{\rm \ref{#1}}}
+\newcommand{\remref}[1]{Remark~{\rm \ref{#1}}}
+\newcommand{\exmref}[1]{Example~{\rm \ref{#1}}}
+\newcommand{\figref}[1]{Figure~{\rm \ref{#1}}}
+\newcommand{\lelemref}[1]{Lemma~{\bf \ref{#1}}}
+\newcommand{\ththmref}[1]{Theorem~{\bf \ref{#1}}}
+
+\def\al{\alpha}
+\def\th{\theta}
+\def\dl{\delta}
+
+\numberwithin{equation}{section}
+\newcommand{\bdd}{\hspace*{-0.08in}{\bf.}\hspace*{0.05in}}
+\newcommand{\beq}[1]{\begin{equation} \label{#1}}
+	\newcommand{\eeq}{\end{equation}}
+\newcommand{\bed}{\begin{displaymath}}
+	\newcommand{\eed}{\end{displaymath}}
+\newcommand{\bea}{\bed\begin{array}{rl}}
+	\newcommand{\eea}{\end{array}\eed}
+\newcommand{\ad}{&\!\!\!\disp}
+\newcommand{\aad}{&\disp}
+\newcommand{\barray}{\begin{array}{ll}}
+	\newcommand{\earray}{\end{array}}
+\def\({\left(}
+\def\){\right)}
+\def\disp{\displaystyle}
+\newcommand{\LL}{{\mathfrak L}}
+\def\dbL{{\rm I\hskip-2.2pt L}}
+\def\clM{{\cal M}}
+
+\def\clD{{\cal D}}
+\def\clG{{\cal G}}
+\def\clV{{\cal V}}
+\def\clE{{\cal E}}
+\newcommand{\CO}{\mathcal{O}}
+%\newcommand{\Nnvspc}{\vspace*{-3mm}}
+\newcommand{\Nnvspc}{\vspace*{-0.5mm}}
+%\newcommand{\Nvspc}{\vspace*{-2mm}}
+\newcommand{\Nvspc}{\vspace*{-0.5mm}}
+\newcommand{\nvspc}{\vspace*{-0.5mm}}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\p}{\mathfrak{p}}
+\newcommand{\EE}{\mathbb{E}}
+\newcommand{\N}{{\mathbb{Z}}_+}
+\newcommand{\m}{\mathfrak{m}}
+\newcommand{\Z}{{\cal Z}}
+\newcommand{\1}{\boldsymbol{1}}
+\def\indi{{\bf 1}}
+\newcommand{\BF}{\mathbb{F}}
+\newcommand{\trace}{\hbox{\rm tr}}
+\def\clN{{\cal N}}
+\newcommand{\CT}{{\cal T}}
+
+\newcommand{\tth}{\theta}
+\newcommand{\Th}{\Theta}
+\newcommand{\ka}{\kappa}
+\newcommand{\ph}{\varphi}
+\def\VY{{V^{h}(y,j)}}
+\def\VX{{V^{h}(x, i)}}
+
+\def\para#1{\vskip .5\baselineskip\noindent{\bf #1}}
+
+\newcommand{\blue}[1]{{\color{blue}#1}}
+\newcommand{\red}[1]{{\color{red}#1}}
+\newcommand{\gray}[1]{{\color{gray} #1}}
+
+
+
+\begin{document}
+
+
+%\usepackage[notcite,notref]{showkeys}
+\title[Title of the presentation]{CSE-$5830$: Project Proposal}
+% \subtitle{Project Structure \& Literature Review about CRF as RNN}
+% \author{\textbf{Xiaohang Ma} }
+% \institute{University of Connecticut \\ Department of Mathematics}
+% \date{\today}
+
+
+\section{Efficient Inference of fully connected CRF}
+\subsection{Definition of Conditional Random Fields}
+A conditional random field $(\mathbf{I}, \mathbf{X})$ is characterized by a Gibbs distribution
+
+\[
+P(\mathbf{X}|\mathbf{I}) = \frac{1}{Z(\mathbf{I})} \exp\left( - \sum_{c \in C_{\mathcal{G}}} \phi_c(\mathbf{X}_c|\mathbf{I}) \right),
+\]
+
+where $\mathcal{G} = (\mathcal{V}, \mathcal{E})$ is a graph on $\mathbf{X}$ and each clique $c$ in a set of cliques $C_{\mathcal{G}}$ in $\mathcal{G}$ induces a potential $\phi_c$. The Gibbs energy of a labeling $\mathbf{x} \in \mathcal{L}^N$ is
+
+\[
+E(\mathbf{x}|\mathbf{I}) = \sum_{c \in C_{\mathcal{G}}} \phi_c(\mathbf{x}_c|\mathbf{I}).
+\]
+
+% The maximum a posteriori (MAP) labeling of the random field is $\mathbf{x}^* = \arg \max_{\mathbf{x} \in \mathcal{L}^N} P(\mathbf{x}|\mathbf{I})$. For notational convenience, we will omit the conditioning in the rest of the paper and use $\psi_c(\mathbf{x}_c)$ to denote $\phi_c(\mathbf{x}_c|\mathbf{I})$.
+
+In the fully connected pairwise CRF model, $\mathcal{G}$ is the complete graph on $\mathbf{X}$ and $C_{\mathcal{G}}$ is the set of all unary and pairwise cliques. The corresponding Gibbs energy i : 
+\[
+E(\mathbf{x}) = \sum_i \psi_u(x_i) + \sum_{i < j} \psi_p(x_i, x_j),
+\]
+
+\subsection{Mean Field Approximation of Inference of CRF}
+	 Instead of computing the exact distribution $P(\mathbf{X})$, the mean field approximation would transfer the computations of CRF into a distribution $Q(\mathbf{X})$ with simpler structure.
+	 The ideal choice of the approximation measure should satisfy \begin{itemize}
+	 \item $Q$ can be expressed product of independent marginals, $Q(\mathbf{X}) = \prod_i Q_i(X_i)$.
+	 \item $Q$ will minimize the KL-divergence $\mathcal{D}(Q\|P)$.
+	\end{itemize}
+	 By applying Lagrainge multiplier method, we could obtain the necessary condition of the optimal measure is a system of nonlinear equations:
+	\[
+	    Q_i(x_i = l) = \frac{1}{Z_i} \exp \left\{ -\psi_u(x_i) - \sum_{l' \in \mathcal{L}} \mu(l, l') \sum_{m=1}^K w^{(m)} \sum_{j \neq i} k^{(m)}(f_i, f_j) Q_j(l') \right\}.
+	\]
+	Recall that we have $N$ different data samples and for each sample we have $L-1$ parameters to be determinated, $i.e. \{Q_{i}(x_i = l)\}_{l = 1}^{L-1}$. 
+	Thus analytically solving this system of equations may still be hard. Practically, a fixed point iteration approximation could be an efficient way to obtain the numerical solution.
+	The fixed -point iteration is given by the following procedure.
+	\begin{itemize}
+		\item Initialize Q by \[
+	  Q_i(x_i) \leftarrow \frac{1}{Z_i} \exp\left\{-\phi_u(x_i)\right\}.
+		\]
+		\item $\hat{Q}_i^{(m)}(l) \gets \sum_{j \neq i} k^{(m)}(f_i, f_j) Q_j(l)$\;
+		\item $\hat{Q}_i(x_i) \gets \sum_{l' \in \mathcal{L}} \mu^{(m)}(x_i, l) \sum_m w^{(m)} \hat{Q}_i^{(m)}(l)$\;
+		\item $Q_i(x_i) \gets \exp \left\{-\psi_u(x_i) - \hat{Q}_i(x_i) \right\}$\;
+		\item 
+		    normalize $Q_i(x_i)$\;
+		\item repeat until convergence.
+	      \end{itemize}
+\section{End-to-end Learning and Inference of CRF}
+For the mean field approximation inference of a CRF, we can embed all the calculation into a CNN layer,
+and the iteration can be regarded as another RNN structure. Thus the inference step can be solely based on 
+Neural Networks structure.
+% \centering
+For the training of this RNN-CRF layer, we use maximal log-likelihood strategy for the parameter updating. 
+However, in this case the loss function of the Neural Networks will admite an intractable gradient.
+\begin{align}
+	&\mathcal{L}(\theta) = \sum_{n=1}^{N} \log P(\mathbf{x}^{(n)}|\mathbf{I}^{(n)}; \theta) = - \sum_{n=1}^{N} [E(\mathbf{x}|\mathbf{I}^{(n)};\theta) + \log Z(\mathbf{I}^{(n)}; \theta)] \\
+	& \Rightarrow \nabla_{\theta} \mathcal{L}(\theta) = - \sum_{n=1}^{N} \nabla_{\theta}  [E(\mathbf{x}|\mathbf{I}^{(n)};\theta) + \log Z(\mathbf{I}^{(n)}; \theta)].
+      \end{align}
+  
+      and a straightforward calculation leads to 
+      \[\nabla_{\theta} \mathcal{L}(\theta) \log Z(\mathbf{I}^{(n)}; \theta) = - \mathbb{E}_{\mathbf{x}^{(n)}\thicksim P(\mathbf{x}^{(n)}|\mathbf{I}^{(n)};\theta)} \nabla_{\theta}E(\mathbf{x}|\mathbf{I}^{(n)};\theta). \]
+In oreder to address this issue, we use mean field approximation again for the calculation of the marginal expectation term in the gradient. Thus, we build an end-to-end CRF model.
+\end{document}

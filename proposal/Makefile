@@ -21,5 +21,5 @@ log:
 
 .PNONY: clean
 clean:
-	$(RM) -rf $(out) *~ .*~ .\#* .Rhistory *.aux *.bbl *.blg *.dvi *.out *.log *.nav \
+	$(RM) -rf *~ .*~ .\#* .Rhistory *.aux *.bbl *.blg *.dvi *.out *.log *.nav \
 	*.snm *.toc *.fff *.fdb_latexmk *.fls *.ttt *diff* *oldtmp* .blb *.synctex.gz
