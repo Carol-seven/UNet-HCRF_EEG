@@ -5,7 +5,7 @@
 \usepackage[colorlinks=true,citecolor=blue,urlcolor=blue]{hyperref}
 \usepackage{natbib}
 \usepackage{setspace}
-\onehalfspacing
+\doublespacing
 
 \newcommand{\sx}[1]{\textcolor{red}{(SX: #1)}}
 
@@ -58,6 +58,67 @@ computationally efficient yet effective approach.
 This integration of modern neural network architectures with CRFs offers
 a robust and promising solution for complex sequence labeling tasks.
 
+
+\section{Literature Review}
+
+
+Deep neural networks, particularly recurrent neural networks (RNNs) like LSTM,
+are widely used for sequence labeling due to their ability to capture
+long-range dependencies in sequences. Bidirectional LSTM (Bi-LSTM) further
+enhances this by processing sequences in both directions, improving context
+understanding.
+CRFs, on the other hand, are commonly used for structured predictions,
+modeling dependencies between neighboring labels to ensure valid output
+sequences.
+\citet{huang2015bidirectional} pioneered the use of Bi-LSTM integrated with
+CRFs for sequence labeling tasks, demonstrating their effectiveness in
+extracting features and ensuring label consistency.
+
+
+However, Bi-LSTMs can still struggle to fully account for structural
+dependencies between predicted labels, leading to potential inconsistencies in
+the output sequence. Additionally, they typically require large amounts of
+labeled data and are computationally expensive, making them challenging to
+deploy in resource-constrained environments, such as hospitals.
+
+
+Transformer-based models, such as BERT~\citep{devlin2019bert},
+have emerged as powerful alternatives to traditional RNN-based approaches.
+Trained on massive datasets in an unsupervised manner, BERT can be fine-tuned
+for various natural language processing tasks, including sequence labeling.
+\citet{devlin2019bert} directly compared BERT to traditional models, including
+Bi-LSTM, and demonstrated its superior performance on tasks like named entity
+recognition, highlighting its ability to capture more contextual information
+than LSTM models.
+
+
+While CRFs are effective for modeling label dependencies, they often lack
+efficient closed-form solutions, especially for complex models beyond
+linear-chain CRFs. To address this, \citet{krahenbuhl2011efficient} introduced
+the use of mean-field approximation to solve more general CRFs in the context
+of complex prediction tasks. By minimizing the Kullback-Leibler (KL)
+divergence, mean-field approximation can be reduced to a fixed-point iteration,
+providing a faster and more efficient approach for training and inference
+while maintaining suitable accuracy. \citet{zheng2015conditional} further
+extended this technique by reformulating mean-field approximation for fully
+connected CRFs, integrating an RNN structure to capture temporal dependencies.
+
+
+\citet{fan2023environment}
+
+
+\section{Potential Data Sets}
+
+
+This dataset consists of electroencephalography (EEG) signals collected from
+hospital patients and provided by Harvard Medical School. It was originally
+part of a Kaggle competition that concluded in April 2024. The data includes
+spectrograms and time-series representations of EEG signals, with the goal of
+classifying six patterns of harmful brain activity, such as seizure (SZ) and
+generalized periodic discharges (GPD). For our project, we will segment the EEG
+data into time steps and use deep neural networks for feature extraction,
+followed by a fully connected CRF layer to perform the sequence labeling of
+brain activity patterns.
 
 
 \bibliographystyle{chicago}
