@@ -2,17 +2,17 @@
 
 \usepackage[margin = 1in]{geometry}
 \usepackage{authblk}
+\usepackage[inline]{enumitem}
 \usepackage[colorlinks=true,citecolor=blue,urlcolor=blue]{hyperref}
 \usepackage{natbib}
 \usepackage{setspace}
-\doublespacing
+\onehalfspacing
 
 \newcommand{\sx}[1]{\textcolor{red}{(SX: #1)}}
 
 \begin{document}
 
-\title{Proposal:
-BERT-CRF Integration for Sequence Labeling on EEG Data \sx{TBD}}
+\title{Proposal: Transformer-CRF Integration for Sequence Labeling on EEG Data}
 
 \author[1]{Xiaohang Ma}
 \author[2]{Shiying Xiao}
@@ -40,7 +40,7 @@ decisions.
 
 In recent years, deep learning has emerged as a powerful tool for sequence
 labeling. Neural network architectures like long short-term memory (LSTM) and
-transformer models have revolutionized sequential data processing.
+Transformer models have revolutionized sequential data processing.
 Additionally, conditional random fields (CRFs) have been employed for modeling
 label dependencies, demonstrating promising results.
 However, while these methods have shown individual strengths, a comprehensive
@@ -50,8 +50,8 @@ tackling complex, multi-modal datasets.
 
 This project introduces a novel framework that combines deep neural networks
 and probabilistic graphical models (PGMs) to enhance sequence labeling
-performance. By employing bidirectional encoder representations from
-transformers (BERT) for feature extraction and integrating them with CRF models,
+performance. By employing Transformer~\citep{vaswani2017attention} for feature
+extraction and integrating them with CRF models,
 we aim to improve sequence tagging accuracy. Furthermore, mean-field
 approximation techniques are utilized for efficient inference, ensuring a
 computationally efficient yet effective approach.
@@ -84,11 +84,12 @@ deploy in resource-constrained environments, such as hospitals.
 
 Transformer-based models, such as BERT~\citep{devlin2019bert},
 have emerged as powerful alternatives to traditional RNN-based approaches.
-Trained on massive datasets in an unsupervised manner, BERT can be fine-tuned
-for various natural language processing tasks, including sequence labeling.
+Trained on massive datasets in an unsupervised manner, Transformer can be
+fine-tuned for various natural language processing tasks,
+including sequence labeling.
 \citet{devlin2019bert} directly compared BERT to traditional models, including
 Bi-LSTM, and demonstrated its superior performance on tasks like named entity
-recognition, highlighting its ability to capture more contextual information
+recognition, highlighting its ability to capture more feature information
 than LSTM models.
 
 
@@ -104,21 +105,42 @@ extended this technique by reformulating mean-field approximation for fully
 connected CRFs, integrating an RNN structure to capture temporal dependencies.
 
 
-\citet{fan2023environment}
+\section{Data}
 
 
-\section{Potential Data Sets}
+The harmful brain activity classification dataset~\citep{jing2023development}
+offers a valuable resource for studying brain health. This dataset,
+originally used in a Kaggle competition that concluded on April 8th, 2024
+(available at
+\url{https://www.kaggle.com/competitions/hms-harmful-brain-activity-classification}),
+contains electroencephalography (EEG) signals from hospital patients, collected
+by Harvard Medical School. The data comes in two primary formats:
+\begin{enumerate*}[label = (\roman*)]
+\item EEG time series data, which records 50-second windows of brain activity
+measured by 19 electrodes placed on the scalp;
+\item Spectrogram data, which provides frequency-based representations of the
+EEG signals.
+\end{enumerate*}
 
 
-This dataset consists of electroencephalography (EEG) signals collected from
-hospital patients and provided by Harvard Medical School. It was originally
-part of a Kaggle competition that concluded in April 2024. The data includes
-spectrograms and time-series representations of EEG signals, with the goal of
-classifying six patterns of harmful brain activity, such as seizure (SZ) and
-generalized periodic discharges (GPD). For our project, we will segment the EEG
-data into time steps and use deep neural networks for feature extraction,
-followed by a fully connected CRF layer to perform the sequence labeling of
-brain activity patterns.
+\section{Activities Plan}
+
+
+\begin{enumerate}
+\item \textbf{Probability graphical model}
+(Shiying Xiao and Xiaohang Ma)
+\begin{itemize}
+\item Build the CRF layer for label predition
+\item Mean field approximation inference and training of CRF model
+\end{itemize}
+\item \textbf{Deep learning methods} (Shiying Xiao, Xiaohui Yin and Xiaohang Ma)
+\begin{itemize}
+\item CNN and RNN layers for feature extraction
+\item RNN-CRF layers for label discrimination
+\end{itemize}
+\item \textbf{Manuscript writing} (Shiying Xiao, Xiaohui Yin and Xiaohang Ma)
+\item \textbf{Project presentation} (Shiying Xiao, Xiaohui Yin and Xiaohang Ma)
+\end{enumerate}
 
 
 \bibliographystyle{chicago}
