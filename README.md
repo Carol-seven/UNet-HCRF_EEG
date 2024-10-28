@@ -120,12 +120,12 @@ Convolutional Networks-Hidden conditional Random Field model for human action re
 The introduced HCRF will assign hidden labels and align their compatibilities for the features 
 and the likelihood of the observed label 
 could be obtained by summation over all possible assignments of hidden state.
-That exactly meats the goal of our works, since in our data, we can only observe the label of the whole egg or 
+That exactly meats the goal of our works, since in our data, we can only observe the label of the whole eeg or 
 spectrogram, but those pixels that are active for the label prediction is unknown. Thus, we will introduce 
 a hidden CRF layer for the discrimination of which part of the image the model should pay attention to.
 The major difference of our approach with this work is that, our hidden is fully connected, thus message passing and 
-belief propagation are not trackable  in our case. For approximately obtaining the log-likelihood of our model
- a mean field variational inference will be used for the efficiency calculation of the loss function.
+belief propagation are not trackable  in our case. For efficiently training our model,
+a mean field variational inference will be used for  approximately obtaining the log-likelihood of the observed labels.
 ### Potential Topics and Data Sources
 
 1. [Harmful Brain Activity Classification](https://www.kaggle.com/competitions/hms-harmful-brain-activity-classification)
