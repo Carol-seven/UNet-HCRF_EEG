@@ -21,6 +21,18 @@
 | Final Presentation    | In-class presentation                   | December 2nd and 4th   |
 | Final Report          | Minimum 5 pages, IEEE conference format | Tuesday, December 10th |
 
+****
+### Nvidia GPU Resource
+Use the following account to get access to the Nvidia V100 GPU for training and inference, 
+the project data was pre-downloaded from the HMS kaggle competition.
+``````bash
+URL: https://learn.nvidia.com/
+Login Account: xhma572737202@gmail.com
+Password: J@vN.L7)'ap3TPp
+``````
+To launch the jupyter notebook, access the Fundamentals of Deep Learning Course at 'My Learning' Page. 
+Then Start the course and click Launch.
+****
 ### Project Proposal
 
 1. Project title and list of group members.
@@ -89,6 +101,31 @@ implementation, we leverage advanced deep learning frameworks, such as
 TensorFlow or PyTorch, to accelerate computation process, enabling efficient
 solutions to complex CRF models in large-scale tasks.
 
+4. [An end-to-end approach to segmentation in medical images with CNN and posterior-CRF](https://www.sciencedirect.com/science/article/pii/S136184152100356X?ref=pdf_download&fr=RR-2&rr=8d6e21ec8c5b3b8d)
+
+This paper fulfilles the End-to-end CNN-CRF architecture for segmentation of CT image.
+We will use the Posterior-CRF framework proposed by this paper, that is,  
+the CNN will be integrated with a U-net structure and generating a feature maps 
+with the same spatial scale as the original input of CNN. And the unary & binary features of CRF layer will be based on 
+the feature maps.
+
+[//]: # (We will integrate the U-net structure and training procedure from this paper with )
+
+5. [A Multi-Stream Graph Convolutional
+   Networks-Hidden Conditional Random Field
+   Model for Skeleton-Based Action Recognition](https://ieeexplore.ieee.org/document/9000721)
+
+This paper proposed a novel method to construct a Graph
+Convolutional Networks-Hidden conditional Random Field model for human action recognition. 
+The introduced HCRF will assign hidden labels and align their compatibilities for the features 
+and the likelihood of the observed label 
+could be obtained by summation over all possible assignments of hidden state.
+That exactly meats the goal of our works, since in our data, we can only observe the label of the whole egg or 
+spectrogram, but those pixels that are active for the label prediction is unknown. Thus, we will introduce 
+a hidden CRF layer for the discrimination of which part of the image the model should pay attention to.
+The major difference of our approach with this work is that, our hidden is fully connected, thus message passing and 
+belief propagation are not trackable  in our case. For approximately obtaining the log-likelihood of our model
+ a mean field variational inference will be used for the efficiency calculation of the loss function.
 ### Potential Topics and Data Sources
 
 1. [Harmful Brain Activity Classification](https://www.kaggle.com/competitions/hms-harmful-brain-activity-classification)
