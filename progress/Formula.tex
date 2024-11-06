@@ -1,0 +1,249 @@
+\documentclass[conference]{IEEEtran}
+
+\usepackage{amsfonts,amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage{natbib}
+\usepackage{bbm}
+%notations
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{exm}[thm]{Example}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{rem}[thm]{Remark}
+
+\newcommand{\corref}[1]{Corollary~{\rm \ref{#1}}}
+\newcommand{\defref}[1]{Definition~{\rm \ref{#1}}}
+\newcommand{\exmref}[1]{Example~{\rm \ref{#1}}}
+\newcommand{\lemref}[1]{Lemma~{\rm \ref{#1}}}
+\newcommand{\propref}[1]{Proposition~{\rm \ref{#1}}}
+\newcommand{\prpropref}[1]{Proposition~{\bf \ref{#1}}}
+\newcommand{\remref}[1]{Remark~{\rm \ref{#1}}}
+\newcommand{\thmref}[1]{Theorem~{\rm \ref{#1}}}
+\newcommand{\ththmref}[1]{Theorem~{\bf \ref{#1}}}
+
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+\newcommand{\beq}[1]{\begin{equation} \label{#1}}
+	\newcommand{\eeq}{\end{equation}}
+\newcommand{\bea}{\bed\begin{array}{rl}}
+	\newcommand{\eea}{\end{array}\eed}
+\newcommand{\bed}{\begin{displaymath}}
+	\newcommand{\eed}{\end{displaymath}}
+\newcommand{\barray}{\begin{array}{ll}}
+	\newcommand{\earray}{\end{array}}
+
+\newcommand{\aad}{&\disp}
+\newcommand{\ad}{&\!\!\!\disp}
+\newcommand{\al}{\alpha}
+\newcommand{\be}{\beta}
+\newcommand{\disp}{\displaystyle}
+\newcommand{\dl}{\delta}
+\newcommand{\E}{{\mathbb E}}
+\newcommand{\e}{\varepsilon}
+\newcommand{\ee}{\Delta}
+\newcommand{\la}{\lambda}
+\newcommand{\PP}{{\mathbb P}}
+\newcommand{\nd}{\noindent}
+\newcommand{\sg}{\sigma}
+
+
+\newcommand{\NM}{{\rm NM}}
+\newcommand{\AM}{{\rm AM}}
+
+\newcommand{\A}{{\cal A}}
+\newcommand{\F}{{\cal F}}
+\newcommand{\I}{{\cal I}}
+\newcommand{\M}{{\cal M}}
+\newcommand{\U}{{\cal U}}
+\newcommand{\X}{{\cal X}}
+\newcommand{\II}{{\cal I}}
+\newcommand{\HH}{{\cal H}}
+
+\newcommand{\bdd}{\hspace*{-0.08in}{\bf.}\hspace*{0.05in}}
+
+\newcommand{\lbar}{\overline}
+\newcommand{\wdt}{\widetilde}
+\newcommand{\wdh}{\widehat}
+\newcommand{\diag}{{\rm diag}}
+\def\th{\theta}
+\def\para#1{\vskip 0.4\baselineskip\noindent{\bf #1}}
+\def\paraa#1{\vskip 0.4\baselineskip\noindent{\sf #1}}
+
+\def\rr{{\Bbb R}}
+%\def\({\left(}
+%\def\){\right)}
+\def\one{{\hbox{1{\kern -0.35em}1}}}
+\def\op{{\cal L}}
+
+\def\gg{{\cal G}}
+\def\sth{\sum^2_{\th=1}}
+
+\begin{document}
+
+\title{CSE 5830 Course Project Proposal}
+
+\author{\IEEEauthorblockN{Xiaohang Ma}
+\IEEEauthorblockA{\textit{Department of Mathematics} \\
+\textit{University of Connecticut}\\
+Storrs, CT, USA \\
+xiaohang.ma@uconn.edu}
+\and
+\IEEEauthorblockN{Shiying Xiao}
+\IEEEauthorblockA{\textit{Department of Statistics} \\
+\textit{University of Connecticut}\\
+Storrs, CT, USA \\
+shiying.xiao@uconn.edu}
+\and
+\IEEEauthorblockN{Xiaohui Yin}
+\IEEEauthorblockA{\textit{Department of Statistics} \\
+\textit{University of Connecticut}\\
+Storrs, CT, USA \\
+xiaohui.yin@uconn.edu}
+}
+
+\maketitle
+
+\begin{abstract}
+In this project, we will integrate powerful deep neural networks and
+statistical methods with a probabilistic graphical model (PGM) to effectively
+tackle sequence labeling tasks on a heterogeneous medical care dataset.
+\end{abstract}
+
+
+\begin{IEEEkeywords}
+probabilistic graphical model
+\end{IEEEkeywords}
+
+
+\section{Introduction}
+
+The
+
+\section{CNN-HCRF Model}
+
+The classical HCRF model can be formulated as
+\begin{align}
+	\mathbb{P}(y| \mathbf{x}; \theta) & = \sum_{\mathbf{h} \in H^{N}} \mathbb{P}(y, \mathbf{h}| \mathbf{x}; \theta) \\
+	& = \frac{\sum_{\mathbf{h}\in H^{N}} \exp(\Phi(y, \mathbf{h}, \mathbf{x}; \theta))}
+	{\sum_{y^{'}} \sum_{\mathbf{h}\in H^{N}} \exp(\Phi(y^{'}, \mathbf{h}, \mathbf{x}; \theta))}.
+\end{align}
+
+Different to the design of most existing HCRF models, which they assign potentials based on the features predefined from the input data \(\mathbf{I}\).
+% \( \mathbb{P}(y, \mathbf{h}| \mathbf{x};\theta) \).
+%  Here, we consider a generative model that constructing
+% \(\PP (\mathbf{h}|\mathbf{x}; \theta)\) through a CRF framework then using an unary potential for , 
+Our HCRF replace \(I\) with features learned by CNN, \(i.e. \ \mathbf{F}(\mathbf{I})\). 
+Thus the new potentials become:
+\[
+	\Phi(y, \mathbf{h}, \mathbf{x}; \theta) = \Phi(y, \mathbf{h}, \mathbf{F}(\mathbf{I}); \theta).
+	% \PP (y, \mathbf{h}| \mathbf{x}; \theta) = \PP (y | \mathbf{h},  \mathbf{x}; \theta)
+	% \cdot \PP ( \mathbf{h}| \mathbf{x}; \theta).
+\]
+Thus, we design the potential of our HCRF model as.
+\begin{align}
+	\Phi(y, \mathbf{h}, \mathbf{x}; \theta) & = \underbrace{\sum_{j \in \nu} \phi(h_{j}, x_{j}; \omega) +
+	\sum_{i \neq j} \psi(h_{i}, h_{j}, x_{i}, x_{j}; \eta) }_{
+		% \propto \log\PP ( \mathbf{h}| \mathbf{x}; \theta)
+		\textrm{Measures  log-likelihood \(\log\PP ( \mathbf{h}| \mathbf{x}; \theta)\)}
+		}\\
+	& + \underbrace{ \sum_{j \in \nu}\varphi
+	(y, h_{j}, x_{j}; \delta) + \vartheta(y, \mathbf{x};
+	\varpi)}_{
+		% \propto \log \PP (y | \mathbf{h},  \mathbf{x}; \theta)
+		\textrm{Measures log-likelihood \(\log \PP (y | \mathbf{h},  \mathbf{x}; \theta)\)}
+		}
+\end{align}
+
+\noindent
+{\textbf{Unary Potential}} \(\phi(h_{j}, x_{j}; \omega)\): measures the likelihood of the local feature
+\(x_{j}\) is assigned as the hidden attention state \(h_{j}\).
+We generate the likelihood through a softmax operation on \(\mathbf{F}(\mathbf{x})\)
+the feature maps of CNN with \((N, C_{\textrm{out}})\) dimensions,
+by which the potential of each pixel \(x_j\) assigned as each
+state of hidden state set \(\{0, 1, \dots, 5\}\)
+is drawn and represented by a matrix with \((N, 2)\) dimension.
+
+The parameter \(\omega\) is learned by our end-to-end CNN-Unet training structure.
+
+\noindent
+{\textbf{Unary Potential}} \(\varphi(y, h_{j}; \delta)\) measures the compatibility between global class label \(y\)
+and the hidden local state \(h_{j}\).
+This potential is parametrized as:
+\[
+	\varphi(y, h_{j};\delta) = \sum_{a \in Y} \sum_{b \in H} \delta_{a, b}
+	\cdot \mathbbm{1}(y = a) \cdot \mathbbm{1}(h_{j} = b).
+\]
+
+\noindent
+{\textbf{Binary Potential}} \(\psi(h_{i}, h_{j}, x_{i}, x_{j}; \eta)\) 
+balances the hidden label compatibility of the neighboring pixels on the feature image \(\mathbf{F}(\mathbf{I})\).
+We define this potential through a common contrast-sensitive two-kernal potentials see([Krähenbühl P, Koltun V. 2011], [Chen S, Gamechi Z S, Dubost F, et al. 2022]):
+\begin{eqnarray}
+	 \psi(h_{i}, h_{j}, x_{i}, x_{j};  \eta) = \mu(h_{i}, h_{j}) \Big[ \omega_{1} 
+	\exp ( - \frac{\left\lvert p_{i} - p_{j} \right\rvert^{2} }{2 \eta_{\alpha}^{2}}\\
+	 - \frac{\left\lvert \mathbf{F}_{i}(\mathbf{I}) - \mathbf{F}_{j}(\mathbf{I}) \right\rvert^{2} }{2 \eta_{\beta}^{2}}) 
+	 + \omega_{2}\exp ( - \frac{\left\lvert p_{i} - p_{j} \right\rvert^{2}}{2 \eta_{\gamma}^{2}})\Big].
+\end{eqnarray}
+
+\section{Variational Inference of HCRF}
+\subsection{\textbf{ELBO Under Mean-Filed Variational Family}}
+The existence of the hidden variable \(\mathbf{h}\) makes our model more interpretable. However, since We will train our model through maximal likelihood method, 
+ introducing the hidden variable will make precisely computation the summation \(\sum_{\mathbf{h} \in H^{N}} \mathbb{P}(y, \mathbf{h}| \mathbf{x}; \theta)\) intractable.
+To address this issue, we make our computation more feasible through a mean-field variational inference framework, which enables our model efficiently estimating the log-likelihood \(\log\PP(y| \mathbf{x}; \theta).\)
+
+Firstly, we introduce the mean-field varepsilon family approximation of \(\log\PP (\mathbf{h}|y, \mathbf{x};\theta)\) as:
+\[
+	\mathbb{Q}(\mathbf{h}) = \prod_{i=1}^{N} q_{i}(h_{i}).
+\]
+Then the evidence lower bound(ELBO) under the mean-field family is given by
+\begin{align}
+	\textrm{ELBO}(\mathbb{Q}) & = \E_{\mathbb{Q}(\mathbf{h})}\log \PP (y, \mathbf{h}| \mathbf{x}; \theta) - \E_{\mathbb{Q}(\mathbf{h})}\log q(\mathbf{h}) \\
+	& = \sum_{i=1}^{N} \E_{q_{i}(h_{i})} [\phi(h_{j}, x_{j}; \omega) + \varphi
+	(y, h_{j}, x_{j}; \delta) ]  \\ 
+	& + \sum_{i=1}^{N} \sum_{j=1}^{N} \sum_{l,l^{'}} \mathbbm{1}_{\{i \neq j\}} \mathbb{Q}(h_{i} = l)\mathbb{Q}(h_{j} = l^{'})\mu(l, l^{'}) \\
+	& 
+	\Big[ \omega_{1} 
+	\exp ( - \frac{\left\lvert p_{i} - p_{j} \right\rvert^{2} }{2 \eta_{\alpha}^{2}}
+	 - \frac{\left\lvert \mathbf{F}_{i}(\mathbf{I}) - \mathbf{F}_{j}(\mathbf{I}) \right\rvert^{2} }{2 \eta_{\beta}^{2}}) \\
+	 & + \omega_{2}\exp ( - \frac{\left\lvert p_{i} - p_{j} \right\rvert^{2}}{2 \eta_{\gamma}^{2}})\Big] \\ 
+	&  - \sum_{i=1}^{N}\E_{q_{i}}\log q_{i}(h_{i}) + \vartheta(y, \mathbf{x}; \varpi).
+\end{align}
+\subsection{\textbf{Updating Variational Family}}
+By the coordinate ascent variational inference(CAVI) algorithm, we can obtain that fix \(q_{j}(h_{j}), \forall j \neq i\), the optimal \(q_{i}(h_{i})\) that maximizes \(\textrm{ELBO}(q_{i}(h_{i}))\) is given by
+\begin{align}
+	\mathbb{Q}(h_{i}) \propto \exp\{ \E_{\mathbb{Q}({\mathbf{h}_{-i}})} \log \PP (y, h_{i}, \mathbf{h}_{-i}|\mathbf{x}; \theta)\}.
+\end{align}
+
+Thus, we can get that
+\begin{align}
+	q_{i}(l) &= \frac{1}{Z_{i}} \exp \Big\{\phi(h_{j}, x_{j}; \omega) + \varphi
+	(y, h_{j}, x_{j}; \delta) \\
+	& +  \sum_{j\neq i } \sum_{l^{'}}  q(l^{'})\mu(l, l^{'}) 
+	\Big[ \omega_{1} 
+	\exp ( - \frac{\left\lvert p_{i} - p_{j} \right\rvert^{2} }{2 \eta_{\alpha}^{2}}\\
+	&
+	 - \frac{\left\lvert \mathbf{F}_{i}(\mathbf{I}) - \mathbf{F}_{j}(\mathbf{I}) \right\rvert^{2} }{2 \eta_{\beta}^{2}})  + \omega_{2}\exp ( - \frac{\left\lvert p_{i} - p_{j} \right\rvert^{2}}{2 \eta_{\gamma}^{2}})\Big]
+	 \Big\}
+\end{align}
+
+\subsection{\textbf{Computational Complexity Analysis}}
+\noindent
+\begin{itemize}
+	\item {\textbf{Updating Variational Family}} \(\{q_{i}(h_{i})\}\): The computationally expensive part of the fixed point iteration of \(q_{i}(h_i)\) comes
+	 from the message passing, \(i.e\). the convolution of \(\mathbb{Q}(\mathbf{h})\) and gaussian kernal in \(\psi(h_{i}, h_{j}, x_{i}, x_{j}; \eta)\). We need \(O(N^{2})\) runtime for N pixels when evaluating this term precisely.
+	 To make the computation more feasible, a truncated gaussian kernal will be employed, which is only supported on spaces within certain proportion of the untruncated standard deviation. Then the approximate message passing is linear in the number of pixels \(N\).
+	\item {\textbf{Computation of the ELBO}}: The summation over the product of \(q_{i}(h_{i})q_{j}(h_{j})\) and the gaussian kernal in \(\psi(h_{i}, h_{j}, x_{i}, x_{j}; \eta)\) also requires a \(O(N^{2})\) complexity in time. 
+	Owes to a similar truncated gaussian kernal approxiamtion, the runtime can be reduced to \(O(N)\).
+\end{itemize}
+
+\citep{huang2015bidirectional}
+
+
+\bibliographystyle{plain}
+\bibliography{refs}
+
+\end{document}
