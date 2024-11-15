@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 \graphicspath{{./}{../image/}}
 \usepackage[colorlinks=true,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage[numbers]{natbib}
 \usepackage{xcolor}
 
 
@@ -21,10 +22,13 @@
 \newcommand{\Ocal}{\mathcal{O}}
 
 
+\newcommand{\sx}[1]{\textcolor{red}{(SX: #1)}}
+
+
 \begin{document}
 
 
-\title{\LARGE Transformer-CRF Integration for Sequence Labeling on EEG Data}
+\title{\huge UNet-CRF Integration for Sequence Labeling on EEG Data}
 
 \author{\IEEEauthorblockN{Xiaohang Ma}
 \IEEEauthorblockA{\textit{Department of Mathematics} \\
@@ -51,9 +55,9 @@ xiaohui.yin@uconn.edu}
 \begin{abstract}
 
 
-In this project, we will integrate powerful deep neural networks and
-statistical methods with a probabilistic graphical model (PGM) to effectively
-tackle sequence labeling tasks on a heterogeneous medical care dataset.
+%In this project, we will integrate powerful deep neural networks and
+%statistical methods with a probabilistic graphical model (PGM) to effectively
+%tackle sequence labeling tasks on a heterogeneous medical care dataset.
 
 
 \end{abstract}
@@ -62,13 +66,101 @@ tackle sequence labeling tasks on a heterogeneous medical care dataset.
 \begin{IEEEkeywords}
 
 
-probabilistic graphical model
+probabilistic graphical model, UNet, fully connected CRF,
 
 
 \end{IEEEkeywords}
 
 
-\section{CNN-HCRF Model}
+\section{Introduction}
+%Introduction: problem definition and motivation.
+
+
+Sequence labeling tasks are pivotal in diverse domains, especially healthcare,
+where precise and timely data classification can significantly impact patient
+outcomes. Medical datasets, such as physiological signals, often exhibit
+complexity and heterogeneity, posing challenges for traditional modeling
+techniques. Therefore, developing models capable of extracting meaningful
+patterns from these datasets is crucial for accurate diagnostic and prognostic
+decisions.
+
+
+In recent years, deep learning has emerged as a powerful tool for sequence
+labeling. Neural network architectures like long short-term memory (LSTM) and
+Transformer models have revolutionized sequential data processing.
+Additionally, conditional random fields (CRFs) have been employed for modeling
+label dependencies, demonstrating promising results.
+However, while these methods have shown individual strengths, a comprehensive
+approach that leverages their complementary capabilities is essential for
+tackling complex, multi-modal datasets.
+
+
+This project introduces a novel framework that combines deep neural networks
+and probabilistic graphical models (PGMs) to enhance sequence labeling
+performance. By employing Transformer~\citep{vaswani2017attention} for feature
+extraction and integrating them with CRF models,
+we aim to improve sequence tagging accuracy. Furthermore, mean-field
+approximation techniques are utilized for efficient inference, ensuring a
+computationally efficient yet effective approach.
+This integration of modern neural network architectures with CRFs offers
+a robust and promising solution for complex sequence labeling tasks.
+
+
+\section{Background}
+%Background & Related Work: background info and literature survey.
+
+\sx{Add UNet}
+
+Deep neural networks, particularly recurrent neural networks (RNNs) like LSTM,
+are widely used for sequence labeling due to their ability to capture
+long-range dependencies in sequences. Bidirectional LSTM (Bi-LSTM) further
+enhances this by processing sequences in both directions, improving context
+understanding.
+CRFs, on the other hand, are commonly used for structured predictions,
+modeling dependencies between neighboring labels to ensure valid output
+sequences.
+\citet{huang2015bidirectional} pioneered the use of Bi-LSTM integrated with
+CRFs for sequence labeling tasks, demonstrating their effectiveness in
+extracting features and ensuring label consistency.
+
+
+However, Bi-LSTMs can still struggle to fully account for structural
+dependencies between predicted labels, leading to potential inconsistencies in
+the output sequence. Additionally, they typically require large amounts of
+labeled data and are computationally expensive, making them challenging to
+deploy in resource-constrained environments, such as hospitals.
+
+
+Transformer-based models, such as BERT~\citep{devlin2019bert},
+have emerged as powerful alternatives to traditional RNN-based approaches.
+Trained on massive datasets in an unsupervised manner, Transformer can be
+fine-tuned for various natural language processing tasks,
+including sequence labeling.
+\citet{devlin2019bert} directly compared BERT to traditional models, including
+Bi-LSTM, and demonstrated its superior performance on tasks like named entity
+recognition, highlighting its ability to capture more feature information
+than LSTM models.
+
+
+While CRFs are effective for modeling label dependencies, they often lack
+efficient closed-form solutions, especially for complex models beyond
+linear-chain CRFs. To address this, \citet{krahenbuhl2011efficient} introduced
+the use of mean-field approximation to solve more general CRFs in the context
+of complex prediction tasks. By minimizing the Kullback-Leibler (KL)
+divergence, mean-field approximation can be reduced to a fixed-point iteration,
+providing a faster and more efficient approach for training and inference
+while maintaining suitable accuracy. \citet{zheng2015conditional} further
+extended this technique by reformulating mean-field approximation for fully
+connected CRFs, integrating an RNN structure to capture temporal dependencies.
+
+
+\section{Methods}
+%Methods: overview of your proposed method, Intuition on why should it be
+%better than the state of the art, and details of models and algorithms that
+%you developed.
+
+
+\subsection{CNN-HCRF Model}
 
 The classical hidden conditional random field (HCRF) model can be formulated as
 \begin{equation}
@@ -140,7 +232,7 @@ $\psi(h_i, h_j, x_i, x_j; \eta)$
 balances the hidden label compatibility of the neighboring pixels on the 
 feature image $\Fb(\Ib)$.
 We define this potential through a common contrast-sensitive two-kernal 
-potentials~\cite{krahenbuhl2011efficient}\cite{chen2022end}:
+potentials~\citep{krahenbuhl2011efficient, chen2022end}:
 \begin{equation}
 \begin{split}
 & \psi(h_i, h_j, x_i, x_j; \eta) = \mu(h_i, h_j) \Bigg[
@@ -157,10 +249,10 @@ potentials~\cite{krahenbuhl2011efficient}\cite{chen2022end}:
 \end{equation}
 
 
-\section{Variational Inference of HCRF}
+\subsection{Variational Inference of HCRF}
 
 
-\subsection{ELBO Under Mean-Filed Variational Family}
+\subsubsection{ELBO Under Mean-Filed Variational Family}
 
 
 The existence of the hidden variable $\hb$ makes our model more interpretable.
@@ -198,7 +290,7 @@ Then the evidence lower bound (ELBO) under the mean-field family is given by
 \end{equation}
 
 
-\subsection{Updating Variational Family}
+\subsubsection{Updating Variational Family}
 
 
 By the coordinate ascent variational inference(CAVI) algorithm,
@@ -228,7 +320,7 @@ q_i(l) &= \frac{1}{Z_i} \exp \Bigg\{
 \end{equation}
 
 
-\subsection{Computational Complexity Analysis}
+\subsubsection{Computational Complexity Analysis}
 
 
 \begin{itemize}
@@ -249,7 +341,17 @@ be reduced to $\Ocal(N)$.
 \end{itemize}
 
 
-\bibliographystyle{IEEEtran}
+\section{Results}
+%Results: Description of your experiments and results and a list of questions
+%your experiments are designed to answer.
+
+
+\section{Conclusion}
+%Conclusion: discussion and future work.
+
+
+
+\bibliographystyle{IEEEtranN}
 \bibliography{refs}
 
 \end{document}
