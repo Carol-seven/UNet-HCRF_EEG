@@ -22,6 +22,9 @@
 | Final Report          | Minimum 5 pages, IEEE conference format | Tuesday, December 10th |
 
 ---
+### Pretrain Unet model
+Please reference this code for training Unet Model [EfficientNetB0 Starter - [LB 0.43]](https://www.kaggle.com/code/cdeotte/efficientnetb0-starter-lb-0-43#Train-Scheduler)
+
 
 ### Nvidia GPU Resource
 Use the following account to get access to the Nvidia V100 GPU for training and
