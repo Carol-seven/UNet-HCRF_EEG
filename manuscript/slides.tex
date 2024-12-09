@@ -311,19 +311,52 @@ where $Z_i$ is the normalization constant.
 %\end{frame}
 
 
-\section[Data Preprocessing]{Data Preprocessing}
+\section[Experiment]{Experiment}
 
 
-\begin{frame}{Data Preparation}
+\begin{frame}{Harmful Brain Activity Classification Dataset}
 \begin{itemize}
-\item Extract the 10 min long Kaggle Spectrogram centered at the middle time
-where the experts rating (Global EEGs)
-\item Transform the 50s long EEG waveforms into Spectrograms
+\item The dataset contains 50-second long electroencephalography (EEG) samples
+covering a 10-minute window as well as spectrograms matching each sample.
+\bigskip
+\item The EEG samples were labeled by expert annotators to determine which of
+the six features each spectrogram belonged to.
+\bigskip
+\item The longer 10-minute window allows for the model to pick up on further
+insights regarding the nature of the brain activity.
 \end{itemize}
 \end{frame}
 
 
-\begin{frame}{EEG signal denosing using Wavelet transform}
+\begin{frame}{Data Preparation}
+\begin{itemize}
+\item Extract 10-minute long spectrograms centered at the midpoint time,
+where the expert ratings (Global EEGs) were provided.
+\bigskip
+\item Convert the 50-second long EEG waveforms into spectrograms.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Make Spectrogram from EEG}
+\begin{itemize}
+\item Bipolar Montage combines multiple EEG electrode signals by calculating
+the difference between adjacent electrodes, yielding signals representing
+specific brain regions.
+\end{itemize}
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=.7\textwidth]{inion}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Make Spectrogram from EEG (cont.)}
+\begin{itemize} 
+\item A single time series signal is required to generate a spectrogram.
+To create four spectrograms from the dataset's 19 EEG time series signals,
+we employ Bipolar Montage to combine them into four representative signals.
+\end{itemize}
 \begin{footnotesize}
 \begin{align*}
 & \text{LL Spec} = \frac{1}{4} \left[
@@ -333,46 +366,46 @@ spec(Fp1-F3) + spec(F3-C3) + spec(C3-P3) + spec(P3-O1) \right], \\
 & \text{RP Spec} = \frac{1}{4} \left[
 spec(Fp2-F4) + spec(F4-C4) + spec(C4-P4) + spec(P4-O2) \right], \\
 & \text{RR Spec} = \frac{1}{4} \left[
-spec(Fp2-F8) + spec(F8-T4) + spec(T4-T6) + spec(T6-O2) \right]
+spec(Fp2-F8) + spec(F8-T4) + spec(T4-T6) + spec(T6-O2) \right],
 \end{align*}
 \end{footnotesize}
-\begin{figure}[tbp]
-\centering
-\includegraphics[width=.55\textwidth]{inion}
-\end{figure}
+where $spec(\cdot)$ is a custom function implemented using the \pkg{pywt} and
+\pkg{librosa} packages for signal transformation.
 \end{frame}
 
 
-\begin{frame}{EEG Signal Denosing using Wavelet Transform}
-\begin{enumerate}
-\item Calculates the mean absolute deviation of a signal $d$:
-\begin{equation*}
-\mathrm{maddest}(d, axis) = \frac{1}{N} \sum_{i=1}^N
-\left\vert d_i - \frac{1}{N} \sum_{j=1}^N d_j \right\vert,
-\end{equation*}
-where $d_i$ is the value of the signal at index $i$, and
-$N$ is the length of $d$.
-\item Denoises a signal using wavelet decomposition:
-\begin{enumerate}
-\item Perform wavelet decomposition
-\item Calculate the noise standard deviation using the last level of
-coefficients
-\item Compute the universal threshold
-\item Apply a hard thresholding operation to the coefficients
-\item Reconstruct the signal using the inverse wavelet transform
-\end{enumerate}
-\end{enumerate}
-\end{frame}
+%\begin{frame}{EEG Signal Denosing using Wavelet Transform}
+%\begin{enumerate}
+%\item Calculates the mean absolute deviation of a signal $d$:
+%\begin{equation*}
+%\mathrm{maddest}(d, axis) = \frac{1}{N} \sum_{i=1}^N
+%\left\vert d_i - \frac{1}{N} \sum_{j=1}^N d_j \right\vert,
+%\end{equation*}
+%where $d_i$ is the value of the signal at index $i$, and
+%$N$ is the length of $d$.
+%\item Denoises a signal using wavelet decomposition:
+%\begin{enumerate}
+%\item Perform wavelet decomposition
+%\item Calculate the noise standard deviation using the last level of
+%coefficients
+%\item Compute the universal threshold
+%\item Apply a hard thresholding operation to the coefficients
+%\item Reconstruct the signal using the inverse wavelet transform
+%\end{enumerate}
+%\end{enumerate}
+%\end{frame}
 
 
-\begin{frame}{Create Spectrograms from the Middle 50 Seconds}
+\begin{frame}{Make Spectrogram from EEG (cont..)}
 \begin{figure}[tbp]
 \centering
-\includegraphics[width=.4\textwidth]{EEG_Signal}
+\vspace{-.5em}
+\includegraphics[width=.5\textwidth]{EEG_Signal}
 \end{figure}
+\vspace{-1em}
 \begin{figure}[tbp]
 \centering
-\includegraphics[width=.5\textwidth]{EEG_Spectrogram}
+\includegraphics[width=.55\textwidth]{EEG_Spectrogram}
 \end{figure}
 \end{frame}
 
