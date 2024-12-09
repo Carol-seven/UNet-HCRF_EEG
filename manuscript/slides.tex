@@ -254,6 +254,26 @@ where $Z_i$ is the normalization constant.
 \end{frame}
 
 
+\begin{frame}{Mean Field Inference in HCRF}
+\centering
+\resizebox{.95\textwidth}{!}{
+\begin{algorithm}[H]
+\caption{Mean-field inference in fully-connected CRF}
+\KwIn{$Q_i(h_i) \gets U_i(h_i), \; i = 1, 2, \dots, N$
+\tcp*[f]{Initialize $Q(h)$}}
+\While{not reach max iteration number}{
+$\hat{Q}_i^{(m)}(h_i) \gets \sum_{j \neq i} k^{(m)}(f_i, f_j) Q_j(h_i)$ for all
+$m$ \tcp*[f]{Message Passing}\;
+$\tilde{Q}_i^{(m)}(h_i) \gets \sum_{l \in \mathcal{L}} \mu^{(m)}(h_i, l)
+\sum_m \omega^{(m)} \hat{Q}_i^{(m)}(l)$ \tcp*[f]{Compatibility Transform}\;
+$Q_i(h_i) \gets \exp \{\phi(h_j, x_j; \omega) + \varphi(y, h_j, x_j; \delta)
+- \tilde{Q}_i(x_i)\}$ \tcp*[f]{Local Update}\;
+Normalize $Q_i(h_i)$\;
+}
+\end{algorithm}}
+\end{frame}
+
+
 %\begin{frame}{Model Structure}
 %\begin{small}
 %\begin{itemize}
@@ -417,6 +437,65 @@ where $spec(\cdot)$ is a custom function implemented using the \pkg{pywt} and
 \includegraphics[width=.55\textwidth]{EEG_Spectrogram}
 \end{figure}
 \end{frame}
+
+
+\begin{frame}
+\frametitle{Training Schedule}
+The loss function was designed as Kullback-Leibler (KL) divergence.
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=.55\textwidth]{pretrain}
+\vspace{-.3em}
+\caption{Pre-train UNet learning rate schedule.}
+\end{figure}
+\vspace{-1.2em}
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=.55\textwidth]{finetune}
+\vspace{-.3em}
+\caption{Fine tuning HCRF learning rate schedule.}
+\end{figure}
+\end{frame}
+
+
+
+\section{Results and Conclusion}
+
+
+\begin{frame}{Results}
+We evaluate our model by 5 fold cross-validation.
+\bigskip
+\begin{itemize}
+\item Our model achieves a \textbf{0.4992} KL-divergence.
+\bigskip
+\item The baseline model from Kaggle using EfficientNet obtains a 0.59
+cross-validation KL-divergence.
+\end{itemize}
+\bigskip
+However, there still are many teams on Kaggle have achieved even lower
+KL-divergence scores (0.2-0.3) by leveraging the power of large models
+like Vision Transformers (ViT).
+\end{frame}
+
+
+\begin{frame}{Conclusion}
+\begin{itemize}
+\item We build a Hidden Conditional Random Fields for EEG based Spectrograms
+image classification.
+\bigskip
+\item The latent CRF layer is desgined to capture the latent segmentation
+information of the output of Neural Networks.
+\bigskip
+\item A variational mean-field inference scheme is used to address the
+posterior distribution.
+\bigskip
+\item We integrate the Unet and HiddenCRF into an end-to-end training structure.
+The Neural Networks feature learning and variational inference can be
+accelerated jointly by GPUs.
+\end{itemize}
+\end{frame}
+
+
 
 
 
