@@ -81,13 +81,22 @@ $^2$Department of Statistics, University of Connecticut}
 \begin{frame}{Introduction}
 \begin{itemize}
 \setlength{\itemsep}{1.5em}
-\item Sequence labeling tasks are crucial for healthcare, where accurate and
-timely data classification can significantly impact patient outcomes.
+\item Electroencephalography (EEG) pattern recognition tasks are crucial for
+healthcare, where accurate and timely data classification can significantly
+impact patient outcomes.
 \item Deep learning has recently emerged as a powerful tool for sequence
 labeling.
 \item Conditional random fields (CRFs) have been employed for modeling label
 dependencies, demonstrating promising results.
 \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Framework}
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\textwidth]{model}
+\end{figure}
 \end{frame}
 
 
@@ -192,7 +201,7 @@ $\QQ(h) = \prod_{i=1}^N q_i(h_i)$.
 \item The evidence lower bound (ELBO) under the mean-field family is:
 \begin{equation*}
 \begin{split}
-& \textrm{ELBO}(\QQ) = \EE_{\QQ(\hb)} \log\PP(y, \hb \vert \xb; \theta)
+& \mathrm{ELBO}(\QQ) = \EE_{\QQ(\hb)} \log\PP(y, \hb \vert \xb; \theta)
 - \EE_{\QQ(\hb)} \log q(\hb) \\
 &\quad = \sum_{i=1}^N \EE_{q_i(h_i)}
 \left[ \phi(h_j, x_j; \omega) + \varphi(y, h_j, x_j; \delta) \right] \\
@@ -215,7 +224,7 @@ $\QQ(h) = \prod_{i=1}^N q_i(h_i)$.
 
 \begin{frame}{Variational Inference of HCRF (cont.)}
 \begin{itemize}
-\item By the coordinate ascent variational inference(CAVI) algorithm, fixing
+\item By the coordinate ascent variational inference (CAVI) algorithm, fixing
 $q_j(h_j), \forall j \neq i$, the optimal $q_i(h_i)$ that maximizes
 $\mathrm{ELBO}(q_i(h_i))$ is:
 \begin{equation*}
@@ -316,8 +325,8 @@ where $Z_i$ is the normalization constant.
 
 \begin{frame}{Harmful Brain Activity Classification Dataset}
 \begin{itemize}
-\item The dataset contains 50-second long electroencephalography (EEG) samples
-covering a 10-minute window as well as spectrograms matching each sample.
+\item The dataset contains 50-second long EEG samples covering a 10-minute
+window as well as spectrograms matching each sample.
 \bigskip
 \item The EEG samples were labeled by expert annotators to determine which of
 the six features each spectrogram belonged to.
