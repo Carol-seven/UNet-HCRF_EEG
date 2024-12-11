@@ -12,14 +12,21 @@
 
 %% notations; only define those you use frequently
 \newcommand{\EE}{{\mathbb{E}}}
+\newcommand{\Fb}{\mathbf{F}}
+\newcommand{\hb}{\mathbf{h}}
+\newcommand{\Hc}{\mathcal{H}}
+\newcommand{\Ib}{\mathbf{I}}
+\newcommand{\Lc}{\mathcal{L}}
 \newcommand{\PP}{{\mathbb{P}}}
 \newcommand{\QQ}{{\mathbb{Q}}}
-\newcommand{\Fb}{\mathbf{F}}
-\newcommand{\Ib}{\mathbf{I}}
-\newcommand{\hb}{\mathbf{h}}
 \newcommand{\xb}{\mathbf{x}}
+\newcommand{\Oc}{\mathcal{O}}
 \newcommand{\one}{\mathbbm{1}}
 \newcommand{\Ocal}{\mathcal{O}}
+\newcommand{\RR}{{\mathbb{R}}}
+
+\let\oldsubsubsection\subsubsection
+\renewcommand{\subsubsection}[1]{\oldsubsubsection{\textbf{#1}}}
 
 
 \newcommand{\sx}[1]{\textcolor{red}{(SX: #1)}}
@@ -28,7 +35,7 @@
 \begin{document}
 
 
-\title{\huge UNet-CRF Integration for Sequence Labeling on EEG Data}
+\title{\huge UNet-HCRF Integration for EEG Pattern Recognition}
 
 \author{\IEEEauthorblockN{Xiaohang Ma}
 \IEEEauthorblockA{\textit{Department of Mathematics} \\
@@ -66,7 +73,8 @@ xiaohui.yin@uconn.edu}
 \begin{IEEEkeywords}
 
 
-probabilistic graphical model, UNet, fully connected CRF,
+classification, probabilistic graphical model, spectrogram,
+variational inference, wavelet transformation
 
 
 \end{IEEEkeywords}
@@ -75,6 +83,8 @@ probabilistic graphical model, UNet, fully connected CRF,
 \section{Introduction}
 %Introduction: problem definition and motivation.
 
+
+\sx{EEG tasks}
 
 Sequence labeling tasks are pivotal in diverse domains, especially healthcare,
 where precise and timely data classification can significantly impact patient
@@ -155,124 +165,150 @@ connected CRFs, integrating an RNN structure to capture temporal dependencies.
 
 
 \section{Methods}
-%Methods: overview of your proposed method, Intuition on why should it be
-%better than the state of the art, and details of models and algorithms that
-%you developed.
+
+
+We begin by introducing the necessary notations.
+Let $\xb = (x_0, x_1, \dots, x_N)^\top$ represent the feature vector of the
+input image, where $x_0$ denotes the global feature capturing overall image
+characteristics, and $x_i$ ($1 \leq i \leq N$) corresponds to a local feature
+extracted from the $i$-th pixel. Here, $N$ denotes the total number of pixels
+in the image. Let $y \in Y$ represent the class label associated with the image,
+where $Y$ is a finite set containing $\vert Y \vert$ possible class labels.
+For any feature $\xb$, a corresponding vector of unobserved variables, referred
+to as hidden part states and denoted by $\hb = (h_1, \dots, h_N)^\top$,
+is introduced. Each $h_i \in H$ represents the hidden part state associated
+with $x_i$ for $i = 1, \dots, N$. Here, $H$ is a finite set of hidden part
+states, and $\vert H \vert$ denotes the cardinality of this set.
 
 
 \subsection{CNN-HCRF Model}
 
-The classical hidden conditional random field (HCRF) model can be formulated as
+
+Following the theory of random fields as outlined
+by~\citet{quattoni2004conditional} and~\citet{wang2006hidden},
+given the feature $\xb$, its corresponding hidden part states $\hb$,
+and the class label $y$, a hidden conditional random field (HCRF) can be
+expressed in exponential form as follows:
 \begin{equation}
+\label{eq:hcrf}
+\PP(y, \hb \mid \xb; \theta)
+= \frac{\exp\left(\Phi(y, \hb, \xb; \theta)\right)}
+{\sum_{y^\prime \in Y} \sum_{\hb \in H^N}
+\exp\left(\Phi(y^\prime, \hb, \xb; \theta)\right)},
+\end{equation}
+where $\theta$ is the parameter of the model,
+$H^N$ denotes the set of all possible hidden part states of $N$ hidden parts,
+and $\Phi(y, \hb, \xb; \theta) \in \RR$ refers to a potential function
+depending on the feature $\xb$ and parameterized by $\theta$.
+
+
+From Equation~\ref{eq:hcrf}, the probability of class label $y$ for the given
+feature $\xb$ is:
+\begin{equation*}
 \begin{split}
-\PP(y \vert \xb; \theta) &= \sum_{\hb \in H^N}
-\mathbb{P}(y, \hb \vert \xb; \theta) \\
+\PP(y \vert \xb; \theta) &= \sum_{\hb \in H^N} \PP(y, \hb \mid \xb; \theta) \\
 &= \frac{\sum_{\hb \in H^N} \exp\left(\Phi(y, \hb, \xb; \theta)\right)}
-{\sum_{y^\prime} \sum_{\hb \in H^N}
+{\sum_{y^\prime \in Y} \sum_{\hb \in H^N}
 \exp\left(\Phi(y^\prime, \hb, \xb; \theta)\right)}.
 \end{split}
-\end{equation}
-
-
-Different to the design of most existing HCRF models, which they assign
-potentials based on the features predefined from the input data $\Ib$.
-%$\PP(y, \hb \vert \xb; \theta)$.
-%Here, we consider a generative model that constructing
-%$\PP(\hb \vert \xb; \theta)$ through a CRF framework then using an 
-%unary potential for , 
-Our HCRF replace $I$ with features learned by CNN, i.e. $\Fb(\Ib)$. 
-Thus the new potentials become:
-\begin{equation*}
-\Phi(y, \hb, \xb; \theta) = \Phi(y, \hb, \Fb(\Ib); \theta).
-%\PP(y, \hb \vert \xb; \theta) = \PP(y \vert \hb, \xb; \theta)
-%\cdot \PP(\hb \vert \xb; \theta).
 \end{equation*}
-Thus, we design the potential of our HCRF model as.
-\begin{equation}
-\begin{split}
+
+
+The potential of the HCRF model, $\Phi(y, \hb, \xb; \theta)$, is defined in the
+following form:
+\begin{align*}
 \Phi(y, \hb, \xb; \theta) &= \underbrace{
-\sum_{j \in \nu} \phi(h_j, x_j; \omega)
-+ \sum_{i \neq j} \psi(h_i, h_j, x_i, x_j; \eta)}_{
-% \propto \log\PP(\hb \vert \xb; \theta)
-\textrm{Measures log-likelihood $\log\PP(\hb \vert \xb; \theta)$}} \\
-&+ \underbrace{
-\sum_{j \in \nu} \varphi(y, h_j, x_j; \delta) + \vartheta(y, \xb; \varpi)}_{
-% \propto \log\PP(y | \hb,  \xb; \theta)
-\textrm{Measures log-likelihood $\log\PP(y \vert \hb, \xb; \theta)$}}
-\end{split}
-\end{equation}
+\sum_{j \in \nu} \phi(h_j, x_j; \omega) +
+\sum_{i \neq j} \psi(h_i, h_j, x_i, x_j; \eta)}_{
+% \propto \log \PP( \hb \vert \xb; \theta)
+\textrm{Measures log-likelihood $\log \PP(\hb \vert \xb; \theta)$}} \\
+& + \underbrace{
+\sum_{j \in \nu} \varphi(y, h_j, x_j; \delta) + \vartheta(y, x_0; \varpi)}_{
+% \propto \log \PP(y | \hb, \xb; \theta)
+\textrm{Measures log-likelihood $\log \PP(y \vert \hb, \xb; \theta)$}},
+\end{align*}
+where the detailed components are described below.
 
 
-{\textbf{Unary Potential}}
-$\phi(h_j, x_j; \omega)$ measures the likelihood of the local feature
-$x_j$ is assigned as the hidden attention state $h_j$.
-We generate the likelihood through a softmax operation on $\Fb(\xb)$
-the feature maps of CNN with $(N, C_{\textrm{out}})$ dimensions,
-by which the potential of each pixel $x_j$ assigned as each state of
-hidden state set $\{0, 1, \dots, 5\}$ is drawn and represented by
-a matrix with $(N, 2)$ dimension.
+\textbf{Unary potential} $\phi(h_j, x_j; \omega)$ measures the likelihood of
+the local feature $x_j$ is assigned as the hidden attention state $h_j$.
+The parameter $\omega$ is learned through the end-to-end CNN-UNet training
+structure. This likelihood is computed by applying a softmax operation to the
+feature maps produced by the CNN.
 
 
-The parameter $\omega$ is learned by our end-to-end CNN-Unet training 
-structure.
-
-
-{\textbf{Unary Potential}}
-$\varphi(y, h_j; \delta)$ measures the compatibility between global
-class label $y$ and the hidden local state $h_j$. This potential is
-parametrized as:
-\begin{equation*}
-\varphi(y, h_{j}; \delta) = \sum_{a \in Y} \sum_{b \in H} \delta_{a, b}
-\cdot \one(y = a) \cdot \one(h_j = b).
-\end{equation*}
-
-
-{\textbf{Binary Potential}}
-$\psi(h_i, h_j, x_i, x_j; \eta)$
-balances the hidden label compatibility of the neighboring pixels on the 
-feature image $\Fb(\Ib)$.
-We define this potential through a common contrast-sensitive two-kernal 
+\textbf{Binary potential} $\psi(h_i, h_j, x_i, x_j; \eta)$ balances the
+hidden label compatibility of the neighboring pixels on the feature $\xb$.
+The potential is defined through a common contrast-sensitive two-kernal
 potentials~\citep{krahenbuhl2011efficient, chen2022end}:
-\begin{equation}
+\begin{equation*}
 \begin{split}
 & \psi(h_i, h_j, x_i, x_j; \eta) = \mu(h_i, h_j) \Bigg[
 \omega_1 \exp \bigg(
 -\frac{\left\lvert p_i - p_j \right\rvert^2}{2\eta_\alpha^2} \\
 &\quad
-- \frac{\left\lvert \Fb_i(\Ib) - \Fb_j(\Ib)\right\rvert^2}{2\eta_\beta^2}
-\bigg)
-+ \omega_2 \exp \left(
+- \frac{\left\lvert x_i - x_j\right\rvert^2}{2\eta_\beta^2}
+\bigg) + \omega_2 \exp \left(
 - \frac{\left\lvert p_i - p_j \right\rvert^2}{2 \eta_\gamma^2}
 \right)
-\Bigg]
+\Bigg],
 \end{split}
-\end{equation}
+\end{equation*}
+where $\mu(h_i, h_j)$ is a label compatibility function that describes
+the interactive influences between different pairs of classes,
+and $p$ refers to the pixel position.
+The parameters $\omega_1$ and $\omega_2$ serve as linear combination weights,
+controlling the contributions of the first and second kernels, respectively.
+And the parameters $\eta_\alpha$, $\eta_\beta$ and $\eta_\gamma$ control the
+influence of the corresponding feature spaces.
+
+
+\textbf{Unary potential} $\varphi(y, h_j; \delta)$ measures the compatibility
+between global class label $y$ and the hidden local state $h_j$.
+This potential is parametrized as:
+\begin{equation*}
+\varphi(y, h_{j}; \delta) = \sum_{a \in Y} \sum_{b \in H} \delta_{a, b}
+\cdot \one(y = a) \cdot \one(h_j = b).
+\end{equation*}
+where $\one(\cdot)$ is an indicator function, and $\delta_{a,b}$ denotes the
+likelihood of class label $y = a$ containing a joint with hidden state
+$h_j = b$, which is learned during training.
+
+
+\textbf{Global potential} $\vartheta(y, x_0; \varpi)$ measures the likelihood of
+the global feature $x_0$ is assigned as the class label $y$, where the parameter
+$\varpi$ is learned during training process.
 
 
 \subsection{Variational Inference of HCRF}
 
 
+The inclusion of the hidden variable $\hb$ enhances the interpretability of the
+model. However, training the model using maximum likelihood estimation
+necessitates the calculation of the summation
+$\sum_{\hb \in H^N} \PP(y, \hb \mid \xb; \theta)$, and the presence of the
+hidden variable renders the exact computation of this summation intractable.
+To circumvent this challenge, a mean-field variational inference framework is
+employed, enabling efficient estimation of the log-likelihood
+$\log \PP(y \mid \xb; \theta)$.
+
+
 \subsubsection{ELBO Under Mean-Filed Variational Family}
 
 
-The existence of the hidden variable $\hb$ makes our model more interpretable.
-However, since We will train our model through maximal likelihood method,
-introducing the hidden variable will make precisely computation the summation
-$\sum_{\hb \in H^N} \PP(y, \hb \vert \xb; \theta)$ intractable.
-To address this issue, we make our computation more feasible through a
-mean-field variational inference framework, which enables our model
-efficiently estimating the log-likelihood $\log\PP(y \vert \xb; \theta)$.
-
-
-Firstly, we introduce the mean-field varepsilon family approximation of
-$\log\PP(\hb \vert y, \xb; \theta)$ as:
+The mean-field varepsilon family approximation of
+$\log \PP(\hb \mid y, \xb; \theta)$ is given by:
 \begin{equation*}
-\QQ(\hb) = \prod_{i=1}^N q_i(h_i).
+\QQ(\hb) = \prod_{i=1}^N q_i(h_i),
 \end{equation*}
-Then the evidence lower bound (ELBO) under the mean-field family is given by
+where $q_i(h_i)$ represents the approximate distribution of the individual
+hidden variable.
+
+
+Under the mean-field family, the evidence lower bound (ELBO) is given by
 \begin{equation}
 \begin{split}
-& \textrm{ELBO}(\QQ) = \EE_{\QQ(\hb)} \log\PP(y, \hb \vert \xb; \theta)
+& \Lc(\QQ) = \EE_{\QQ(\hb)} \log\PP(y, \hb \mid \xb; \theta)
 - \EE_{\QQ(\hb)} \log q(\hb) \\
 &\quad = \sum_{i=1}^N \EE_{q_i(h_i)}
 \left[ \phi(h_j, x_j; \omega) + \varphi(y, h_j, x_j; \delta) \right] \\
@@ -280,75 +316,86 @@ Then the evidence lower bound (ELBO) under the mean-field family is given by
 \QQ(h_i = l) \QQ(h_j = l^\prime) \mu(l, l^\prime) \\
 &\quad \Bigg[ \omega_1 \exp \left(
 - \frac{\left\lvert p_i - p_j \right\rvert^2}{2\eta_\alpha^2}
-- \frac{\left\lvert \Fb_i(\Ib) - \Fb_j(\Ib) \right\rvert^2}{2\eta_\beta^2}
-\right) \\
+- \frac{\left\lvert x_i - x_j \right\rvert^2}{2\eta_\beta^2} \right) \\
 &\quad + \omega_2 \exp \left(
 - \frac{\left\lvert p_i - p_j \right\rvert^2}{2\eta_\gamma^2}
 \right) \Bigg] \\
-&\quad - \sum_{i=1}^N \EE_{q_i} \log q_i(h_i) + \vartheta(y, \xb; \varpi).
+&\quad - \sum_{i=1}^N \EE_{q_i} \log q_i(h_i) + \vartheta(y, x_0; \varpi).
 \end{split}
 \end{equation}
+
+
+\begin{figure*}[tbp]
+\centering
+\includegraphics[width=\textwidth]{workframe}
+\caption{\sx{caption}.}
+\label{fig:workframe}
+\end{figure*}
 
 
 \subsubsection{Updating Variational Family}
 
 
-By the coordinate ascent variational inference(CAVI) algorithm,
-we can obtain that fix $q_j(h_j), \forall j \neq i$, the optimal $q_i(h_i)$
-that maximizes $\textrm{ELBO}(q_i(h_i))$ is given by
-\begin{equation}
+By employing the coordinate ascent variational inference (CAVI) algorithm,
+an efficient method for approximating posterior distributions in probabilistic
+models, the optimization process involves iteratively updating each variational
+factor while holding others fixed. Specifically, fixing $q_j(h_j)$,
+$\forall j \neq i$, the optimal $q_i(h_i)$ that maximizes $\Lc(q_i(h_i))$
+is computed as:
+\begin{equation*}
 \QQ(h_i) \propto \exp\{\EE_{\QQ(\hb_{-i})}
-\log\PP(y, h_i, \hb_{-i} \vert \xb; \theta)\}.
-\end{equation}
+\log\PP(y, h_i, \hb_{-i} \mid \xb; \theta)\}.
+\end{equation*}
 Thus, we can get that
-\begin{equation}
+\begin{equation*}
 \begin{split}
 q_i(l) &= \frac{1}{Z_i} \exp \Bigg\{
 \phi(h_j, x_j; \omega) + \varphi(y, h_j, x_j; \delta) \\
 &+ \sum_{j \neq i} \sum_{l^\prime} q(l^\prime) \mu(l, l^\prime) 
-\Bigg[ \omega_1 \exp \big(
+\Bigg[ \omega_1 \exp \bigg(
 - \frac{\left\lvert p_i - p_j \right\rvert^2}{2\eta_\alpha^2}\\
-&- \frac{\left\lvert \Fb_i(\Ib) - \Fb_j(\Ib) \right\rvert^2}{2\eta_\beta^2}
-\big)
-+ \omega_2 \exp \big(
+&- \frac{\left\lvert x_i - x_j \right\rvert^2}{2\eta_\beta^2}
+\bigg)
++ \omega_2 \exp \left(
 - \frac{\left\lvert p_i - p_j 
 \right\rvert^2}{2\eta_\gamma^2}
-\big)
+\right)
 \Bigg]
-\Bigg\}
+\Bigg\},
 \end{split}
-\end{equation}
+\end{equation*}
+where $Z_i$ is the normalizing constant.
 
 
 \subsubsection{Computational Complexity Analysis}
 
 
-\begin{itemize}
-\item {\textbf{Updating Variational Family}} $\{q_i(h_i)\}$:
-The computationally expensive part of the fixed point iteration of $q_i(h_i)$
-comes from the message passing, i.e. the convolution of $\QQ(\hb)$ and
-Gaussian kernal in $\psi(h_i, h_j, x_i, x_j; \eta)$. We need $\Ocal(N^2)$
-runtime for $N$ pixels when evaluating this term precisely.
-To make the computation more feasible, a truncated gaussian kernal will be
-employed, which is only supported on spaces within certain proportion of
-the untruncated standard deviation. Then the approximate message passing is
-linear in the number of pixels $N$.
-\item {\textbf{Computation of the ELBO}}: The summation over the product of
-$q_i(h_i)q_j(h_j)$ and the gaussian kernal in $\psi(h_i, h_j, x_i, x_j; \eta)$
-also requires a $\Ocal(N^2)$ complexity in time.
-Owes to a similar truncated gaussian kernal approxiamtion, the runtime can
-be reduced to $\Ocal(N)$.
-\end{itemize}
+\paragraph{Updating variational family}
+
+
+The computationally intensive step in the fixed-point iteration of $q_i(h_i)$
+is the message passing process, which involves convolving $\QQ(\hb)$ with a
+Gaussian kernel within the binary potential $\psi(h_i, h_j, x_i, x_j; \eta)$.
+This operation requires $\Oc(N^2)$ runtime for $N$ pixels when evaluated
+exactly. To improve computational efficiency, a truncated Gaussian kernel is
+utilized, which is supported only within a specific proportion of the
+untruncated standard deviation. This approximation reduces the complexity of 
+message passing to linear time, $\Oc(N)$.
+
+
+\paragraph{Computation of the ELBO}
+
+
+The summation over the product of $q_i(h_i)q_j(h_j)$ and the Gaussian kernel
+in $\psi(h_i, h_j, x_i, x_j; \eta)$ also incurs a time complexity of $\Oc(N^2)$.
+By applying a similar truncated Gaussian kernel approximation, the runtime can
+be reduced to $\Oc(N)$.
 
 
 \section{Results}
-%Results: Description of your experiments and results and a list of questions
-%your experiments are designed to answer.
 
 
 \section{Conclusion}
-%Conclusion: discussion and future work.
-
 
 
 \bibliographystyle{IEEEtranN}
