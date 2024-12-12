@@ -1,6 +1,6 @@
-# CSE 5830
+# UNet-HCRF Integration for EEG Pattern Recognition
 
-+ Description: Probabilistic Graphical Models
++ Description: CSE 5830 Probabilistic Graphical Models
 + Instructor: Sheida Nabavi
 + Dates: 2024/08/26 - 2024/12/06
 + Days: Monday, Wednesday
@@ -13,31 +13,20 @@
 
 ## Course Project
 
-| Event                 | Detail                                  |          Due           |
-|-----------------------|-----------------------------------------|:----------------------:|
-| Proposal Presentation |                                         | October 7th and 9th    |
-| Proposal              | 2 pages                                 | Friday, October 11th   |
-| Progress Report       | 2 pages                                 | Friday, November 8th   |
-| Final Presentation    | In-class presentation                   | December 2nd and 4th   |
-| Final Report          | Minimum 5 pages, IEEE conference format | Tuesday, December 10th |
+| Event                 | Detail                                  |          Due                                        |
+|-----------------------|-----------------------------------------|:---------------------------------------------------:|
+| Proposal Presentation |                                         | October 7th and 9th                                 |
+| Proposal              | 2 pages                                 | Friday, October 11th                                |
+| Progress Report       | 2 pages                                 | Friday, November 8th                                |
+| Final Presentation    | In-class presentation                   | ~~December 2nd and 4th~~ December 9th               |
+| Final Report          | Minimum 5 pages, IEEE conference format | ~~Tuesday, December 10th~~ Wednesday, December 11th |
 
 ---
-### Pretrain Unet model
-Please reference this code for training Unet Model [EfficientNetB0 Starter - [LB 0.43]](https://www.kaggle.com/code/cdeotte/efficientnetb0-starter-lb-0-43#Train-Scheduler)
 
+### Pretrain UNet Model
 
-### Nvidia GPU Resource
-Use the following account to get access to the Nvidia V100 GPU for training and
-inference, the project data was pre-downloaded from the HMS kaggle competition.
-
-```
-URL: https://learn.nvidia.com/
-Login Account: xhma572737202@gmail.com
-Password: J@vN.L7)'ap3TPp
-```
-
-To launch the jupyter notebook, access the Fundamentals of Deep Learning Course
-at 'My Learning' Page. Then Start the course and click Launch.
+Please refer to [EfficientNetB0 Starter - [LB 0.43]](https://www.kaggle.com/code/cdeotte/efficientnetb0-starter-lb-0-43#Train-Scheduler)
+for training a UNet model 
 
 ---
 
@@ -76,7 +65,7 @@ at 'My Learning' Page. Then Start the course and click Launch.
 
 This project aims to integrate powerful deep neural networks and statistical
 methods with a probabilistic graphical model (PGM) to effectively tackle
-sequence labeling tasks on a heterogeneous medical care dataset.
+pattern recognition tasks on an EEG dataset.
 
 ### References
 
@@ -117,7 +106,7 @@ is, the CNN will be integrated with a U-net structure and generating a feature
 maps with the same spatial scale as the original input of the CNN. The unary and
 binary features of the CRF layer will be based on these feature maps.
 
-[//]: # (We will integrate the U-net structure and training procedure from this paper with )
+[//]: # (We will integrate the U-Net structure and training procedure from this paper with )
 
 5. [A Multi-Stream Graph Convolutional Networks-Hidden Conditional Random Field Model for Skeleton-Based Action Recognition](https://doi.org/10.1109/TMM.2020.2974323)
 
