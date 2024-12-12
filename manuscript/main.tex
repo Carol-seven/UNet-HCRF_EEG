@@ -87,39 +87,40 @@ variational inference, wavelet transformation
 
 
 \section{Introduction}
-%Introduction: problem definition and motivation.
 
 
-\sx{EEG tasks}
+Electroencephalography (EEG) pattern recognition plays a pivotal role in
+various fields, including neuroscience, clinical medicine, and human-computer
+interaction. By analyzing brain electrical activity, we can gain deeper
+insights into brain states and functions, providing a scientific basis for
+diagnosing and treating neurological disorders, as well as developing
+brain-computer interfaces. EEG pattern recognition not only helps to unveil the
+mechanisms of the brain but also enables the development of smarter and more
+human-centric technologies. However, traditional manual analysis of EEG signals
+is a time-consuming and subjective process, often leading to inconsistencies in
+diagnosis~\citep{liu2013recognizing}.
 
-Sequence labeling tasks are pivotal in diverse domains, especially healthcare,
-where precise and timely data classification can significantly impact patient
-outcomes. Medical datasets, such as physiological signals, often exhibit
-complexity and heterogeneity, posing challenges for traditional modeling
-techniques. Therefore, developing models capable of extracting meaningful
-patterns from these datasets is crucial for accurate diagnostic and prognostic
-decisions.
 
-
-In recent years, deep learning has emerged as a powerful tool for sequence
-labeling. Neural network architectures like long short-term memory (LSTM) and
-Transformer models have revolutionized sequential data processing.
-Additionally, conditional random fields (CRFs) have been employed for modeling
-label dependencies, demonstrating promising results.
-However, while these methods have shown individual strengths, a comprehensive
+In recent years, deep learning has emerged as a powerful tool to automate and
+improve EEG pattern recognition~\citep{craik2019deep}. Neural network
+architectures like convolutional neural network (CNN), long short-term memory
+(LSTM) and Transformer models have revolutionized EEG data processing.
+Additionally, hidden conditional random fields (HCRFs) have been employed for
+modeling label dependencies, demonstrating promising results.
+While these methods have shown individual strengths, a comprehensive
 approach that leverages their complementary capabilities is essential for
 tackling complex, multi-modal datasets.
 
 
 This project introduces a novel framework that combines deep neural networks
-and probabilistic graphical models (PGMs) to enhance sequence labeling
-performance. By employing Transformer~\citep{vaswani2017attention} for feature
-extraction and integrating them with CRF models,
-we aim to improve sequence tagging accuracy. Furthermore, mean-field
+and probabilistic graphical models (PGMs) to enhance the accuracy of EEG
+pattern recognition . By employing UNet~\citep{ronneberger2015unet} for feature
+extraction and integrating them with HCRF models, we aim to improve the
+precision of EEG pattern recognition tagging. Furthermore, mean-field
 approximation techniques are utilized for efficient inference, ensuring a
 computationally efficient yet effective approach.
-This integration of modern neural network architectures with CRFs offers
-a robust and promising solution for complex sequence labeling tasks.
+This integration of modern neural network architectures with HCRFs offers
+a robust and promising solution for EEG pattern recognition tasks.
 
 
 \section{Background}
@@ -500,7 +501,7 @@ a bipolar montage, sourced from Kaggle.}
 \includegraphics[width=\textwidth]{EEG_Spectrogram}
 \end{subfigure}
 \caption{An example of the denoised EEG signal (top) and its corresponding
-	spectrogram representation (bottom).}
+spectrogram representation (bottom).}
 \label{fig:EEG}
 \end{figure}
 
