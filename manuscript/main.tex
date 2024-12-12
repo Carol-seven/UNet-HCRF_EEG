@@ -68,9 +68,24 @@ xiaohui.yin@uconn.edu}
 \begin{abstract}
 
 
-%In this project, we will integrate powerful deep neural networks and
-%statistical methods with a probabilistic graphical model (PGM) to effectively
-%tackle sequence labeling tasks on a heterogeneous medical care dataset.
+Electroencephalography (EEG) pattern recognition presents critical challenges
+in neurological diagnostics, where precise classification of brain activity can
+significantly impact patient outcomes. The complexity of EEG signals pose
+substantial challenges for traditional modeling techniques. This research
+introduces a novel framework integrating deep neural networks and probabilistic
+graphical models to enhance EEG pattern recognition performance. The proposed
+approach combines UNet-based feature extraction with hidden conditional random
+fields (HCRFs) to improve brain activity classification accuracy.
+The methodology employs advanced preprocessing techniques, including wavelet
+denoising and spectrogram transformation of EEG signals from the Harmful Brain
+Activity Classification dataset, which contains 50-second brain activity
+samples labeled into six distinct categories. The research addresses challenges
+in neurological signal processing by developing a sophisticated model capable
+of capturing intricate temporal dependencies and handling varying levels of
+expert annotation agreement. Experimental results demonstrated significant
+improvements in classifying complex EEG patterns across different levels of
+expert consensus. The complete implementation code is available on GitHub at
+\url{https://github.com/Carol-seven/UNet-HCRF_EEG}.
 
 
 \end{abstract}
@@ -105,7 +120,7 @@ In recent years, deep learning has emerged as a powerful tool to automate and
 improve EEG pattern recognition~\citep{craik2019deep}. Neural network
 architectures like convolutional neural network (CNN), long short-term memory
 (LSTM) and Transformer models have revolutionized EEG data processing.
-Additionally, hidden conditional random fields (HCRFs) have been employed for
+Additionally, conditional random fields (CRFs) have been employed for
 modeling label dependencies, demonstrating promising results.
 While these methods have shown individual strengths, a comprehensive
 approach that leverages their complementary capabilities is essential for
@@ -287,7 +302,7 @@ the global feature $x_0$ is assigned as the class label $y$, where the parameter
 $\varpi$ is learned during training process.
 
 
-\begin{figure*}[ht]
+\begin{figure*}[tp]
 \centering
 \includegraphics[width=\textwidth]{workframe}
 \caption{The proposed feature-learning-based HCRF using UNet feature maps.}
@@ -425,7 +440,7 @@ periodic discharges (LPD), lateralized rhythmic delta activity (LRDA),
 generalized rhythmic delta activity (GRDA), and other.
 
 
-\begin{figure}[ht]
+\begin{figure}[tp]
 \centering
 \includegraphics[width=.48\textwidth]{example}
 \caption{Examples of EEG patterns with different levels of expert agreement,
@@ -462,7 +477,7 @@ denoised signal.
 %via \pkg{pywt} \proglang{Python} package
 
 
-\begin{figure}[bp]
+\begin{figure}[tp]
 \centering
 \includegraphics[width=.45\textwidth]{inion}
 \caption{Chains employed to determine representative montage features via
@@ -562,13 +577,38 @@ relatively high learning rate, which gradually decreases over time.
 This smooth decay helps ensure stable training and optimal convergence.
 
 
-\section{Results}
+\section{Results and Discussion}
 
 
-\section{Conclusion}
+In this study, we developed a novel UNet-HCRF model for EEG pattern recognition.
+Our model achieved a competitive KL divergence of 0.4992 on a five-fold
+cross-validation, demonstrating competitive performance compared to the
+baseline EfficientNet model from Kaggle, which had a KL divergence of 0.59.
+However, our results indicated room for further improvement, as state-of-the-art
+models such as Vision Transformers (ViT) have achieved significantly lower KL
+divergence scores, ranging between 0.2 and 0.3.
+
+
+The proposed UNet-HCRF framework integrates a latent CRF layer with a neural
+network architecture to capture intricate segmentation information from EEG
+dataset. By employing a variational mean-field inference scheme and an
+end-to-end training strategy, we efficiently learned both neural network
+features and the CRF parameters. This approach offers a flexible and powerful
+framework for EEG analysis, leveraging the strengths of both deep learning and
+probabilistic graphical models.
+
+
+Our findings demonstrate the potential of HCRF models for EEG pattern
+classification. However, several avenues for future research remain. For
+instance, exploring alternative variational inference techniques or
+incorporating attention mechanisms within the CRF layer could potentially
+enhance model performance. Additionally, investigating the impact of different
+neural network architectures and hyperparameter tuning on the overall model
+performance is also a worthwhile direction for further research.
 
 
 \bibliographystyle{IEEEtranN}
 \bibliography{refs}
+
 
 \end{document}
