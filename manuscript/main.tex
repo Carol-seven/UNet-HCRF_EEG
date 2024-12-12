@@ -124,39 +124,39 @@ a robust and promising solution for EEG pattern recognition tasks.
 
 
 \section{Background}
-%Background & Related Work: background info and literature survey.
-
-\sx{Add UNet}
-
-Deep neural networks, particularly recurrent neural networks (RNNs) like LSTM,
-are widely used for sequence labeling due to their ability to capture
-long-range dependencies in sequences. Bidirectional LSTM (Bi-LSTM) further
-enhances this by processing sequences in both directions, improving context
-understanding.
-CRFs, on the other hand, are commonly used for structured predictions,
-modeling dependencies between neighboring labels to ensure valid output
-sequences.
-\citet{huang2015bidirectional} pioneered the use of Bi-LSTM integrated with
-CRFs for sequence labeling tasks, demonstrating their effectiveness in
-extracting features and ensuring label consistency.
 
 
-However, Bi-LSTMs can still struggle to fully account for structural
-dependencies between predicted labels, leading to potential inconsistencies in
-the output sequence. Additionally, they typically require large amounts of
-labeled data and are computationally expensive, making them challenging to
-deploy in resource-constrained environments, such as hospitals.
+Deep neural networks, particularly convolutional architectures like U-net, have 
+proven highly effective for image segmentation tasks due to their ability to
+capture rich spatial features and contextual information at different scales.
+U-net, in particular, has demonstrated remarkable performance in medical image
+segmentation by leveraging its encoder-decoder architecture with skip
+connections to preserve spatial resolution and improve
+localization~\citep{ronneberger2015unet,zhou2018unet}.
 
 
-Transformer-based models, such as BERT~\citep{devlin2019bert},
-have emerged as powerful alternatives to traditional RNN-based approaches.
-Trained on massive datasets in an unsupervised manner, Transformer can be
-fine-tuned for various natural language processing tasks,
-including sequence labeling.
-\citet{devlin2019bert} directly compared BERT to traditional models, including
-Bi-LSTM, and demonstrated its superior performance on tasks like named entity
-recognition, highlighting its ability to capture more feature information
-than LSTM models.
+Traditional sequence-labeling approaches, such as recurrent neural networks
+(RNNs) like LSTM and bidirectional LSTMs (Bi-LSTM), have been effective in
+capturing long-range dependencies and processing temporal information. However,
+these models are less suited for spatially rich tasks like image segmentation.
+Moreover, LSTMs and Bi-LSTMs often require large labeled datasets, are
+computationally expensive, and struggle to account for the structural
+dependencies present in spatial data, which limits their applicability in
+resource-constrained environments like hospitals.
+
+
+Transformer-based models, such as BERT, have emerged as powerful tools for
+sequence-labeling tasks, demonstrating superior performance over traditional
+RNN-based models. However, their advantages are primarily realized in natural
+language processing rather than spatially dependent tasks like image
+segmentation.
+
+
+U-net addresses these challenges by focusing on capturing structural
+dependencies in spatial domains. For EEG data, where the objective shifts from
+sequence-labeling to segmentation, U-net is a more appropriate choice. Its
+ability to efficiently learn and propagate contextual and spatial information
+makes it a robust alternative to sequence-based methods like Bi-LSTM.
 
 
 While CRFs are effective for modeling label dependencies, they often lack
@@ -287,6 +287,18 @@ the global feature $x_0$ is assigned as the class label $y$, where the parameter
 $\varpi$ is learned during training process.
 
 
+\begin{figure*}[ht]
+\centering
+\includegraphics[width=\textwidth]{workframe}
+\caption{The proposed feature-learning-based HCRF using UNet feature maps.}
+\label{fig:workframe}
+\end{figure*}
+
+
+Figure~\ref{fig:workframe} illustrates the descriptive workframe layout
+employed in this study, highlighting the key components and processes involved.
+
+
 \subsection{Variational Inference of HCRF}
 
 
@@ -330,14 +342,6 @@ Under the mean-field family, the evidence lower bound (ELBO) is given by
 &\quad - \sum_{i=1}^N \EE_{q_i} \log q_i(h_i) + \vartheta(y, x_0; \varpi).
 \end{split}
 \end{equation}
-
-
-\begin{figure*}[tbp]
-\centering
-\includegraphics[width=\textwidth]{workframe}
-\caption{\sx{caption}.}
-\label{fig:workframe}
-\end{figure*}
 
 
 \subsubsection{Updating Variational Family}
@@ -421,6 +425,15 @@ periodic discharges (LPD), lateralized rhythmic delta activity (LRDA),
 generalized rhythmic delta activity (GRDA), and other.
 
 
+\begin{figure}[ht]
+\centering
+\includegraphics[width=.48\textwidth]{example}
+\caption{Examples of EEG patterns with different levels of expert agreement,
+sourced from the HMS dataset.}
+\label{fig:ex}
+\end{figure}
+
+
 Expert agreement was high for some segments; nevertheless, instances of
 disagreement were observed. The segments were categorized as follows:
 \begin{enumerate*}[label = (\roman*)]
@@ -432,15 +445,6 @@ five named patterns.
 \end{enumerate*}
 Figure~\ref{fig:ex} shows an example of EEG patterns with different level of
 agreement.
-
-
-\begin{figure}[tbp]
-\centering
-\includegraphics[width=.48\textwidth]{example}
-\caption{Examples of EEG patterns with different levels of expert agreement,
-sourced from the HMS dataset.}
-\label{fig:ex}
-\end{figure}
 
 
 \subsection{Data Preparation}
@@ -458,11 +462,35 @@ denoised signal.
 %via \pkg{pywt} \proglang{Python} package
 
 
+\begin{figure}[bp]
+\centering
+\includegraphics[width=.45\textwidth]{inion}
+\caption{Chains employed to determine representative montage features via
+a bipolar montage, sourced from Kaggle.}
+\label{fig:inion}
+\end{figure}
+
+
 \textbf{Feature Extraction}: A bipolar montage technique is applied to the
 denoised EEG signals to calculate the difference between adjacent electrode
 signals, generating four representative montage features from the original 19
 features. Figure~\ref{fig:inion} illustrates the bipolar electrode chains used
 in this study.
+
+
+\begin{figure}[tp]
+\centering
+\begin{subfigure}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{EEG_Signal}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{EEG_Spectrogram}
+\end{subfigure}
+\caption{An example of the denoised EEG signal (top) and its corresponding
+spectrogram representation (bottom).}
+\label{fig:EEG}
+\end{figure}
 
 
 \textbf{Spectrogram transformation}: The denoised EEG signals are converted
@@ -480,30 +508,6 @@ of $[-1,1]$ to ensure consistent feature scaling and facilitate model training.
 \textbf{Imputation}: Missing values in the data are imputed with the mean of
 non-missing values within each spectrogram. If all values are missing,
 the spectrogram is set to zero to maintain data consistency.
-
-
-\begin{figure}[tbp]
-\centering
-\includegraphics[width=.45\textwidth]{inion}
-\caption{Chains employed to determine representative montage features via
-a bipolar montage, sourced from Kaggle.}
-\label{fig:inion}
-\end{figure}
-
-
-\begin{figure}
-\centering
-\begin{subfigure}[b]{0.45\textwidth}
-\includegraphics[width=\textwidth]{EEG_Signal}
-\end{subfigure}
-\hfill
-\begin{subfigure}[b]{0.45\textwidth}
-\includegraphics[width=\textwidth]{EEG_Spectrogram}
-\end{subfigure}
-\caption{An example of the denoised EEG signal (top) and its corresponding
-spectrogram representation (bottom).}
-\label{fig:EEG}
-\end{figure}
 
 
 \subsection{Loss Function}
@@ -537,13 +541,7 @@ then refining its solution towards the end, cosine annealing contributes to
 better convergence and reduced oscillations in the loss function.
 
 
-As depicted in Figure~\ref{fig:cos}, the learning rate for both the pre-trained
-UNet and the fine-tuned HCRF exhibit a similar pattern. Both start with a
-relatively high learning rate, which gradually decreases over time.
-This smooth decay helps ensure stable training and optimal convergence.
-
-
-\begin{figure}
+\begin{figure}[tbp]
 \centering
 \begin{subfigure}[b]{0.45\textwidth}
 \includegraphics[width=\textwidth]{pretrain}
@@ -556,6 +554,12 @@ This smooth decay helps ensure stable training and optimal convergence.
 the fine-tuned HCRF (bottom).}
 \label{fig:cos}
 \end{figure}
+
+
+As depicted in Figure~\ref{fig:cos}, the learning rate for both the pre-trained
+UNet and the fine-tuned HCRF exhibit a similar pattern. Both start with a
+relatively high learning rate, which gradually decreases over time.
+This smooth decay helps ensure stable training and optimal convergence.
 
 
 \section{Results}
