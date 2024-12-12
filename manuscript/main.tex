@@ -3,10 +3,12 @@
 %% keep it clean; only include those you need
 \usepackage{amsfonts,amsmath,amssymb}
 \usepackage{bbm}
+\usepackage[inline]{enumitem}
 \usepackage{graphicx}
 \graphicspath{{./}{../image/}}
 \usepackage[colorlinks=true,citecolor=blue,urlcolor=blue]{hyperref}
 \usepackage[numbers]{natbib}
+\usepackage{subcaption}
 \usepackage{xcolor}
 
 
@@ -24,10 +26,14 @@
 \newcommand{\one}{\mathbbm{1}}
 \newcommand{\Ocal}{\mathcal{O}}
 \newcommand{\RR}{{\mathbb{R}}}
+\newcommand{\XX}{{\mathbb{X}}}
+\newcommand{\YY}{{\mathbb{Y}}}
 
 \let\oldsubsubsection\subsubsection
 \renewcommand{\subsubsection}[1]{\oldsubsubsection{\textbf{#1}}}
 
+\let\proglang=\textsf
+\let\pkg=\texttt
 
 \newcommand{\sx}[1]{\textcolor{red}{(SX: #1)}}
 
@@ -390,6 +396,165 @@ The summation over the product of $q_i(h_i)q_j(h_j)$ and the Gaussian kernel
 in $\psi(h_i, h_j, x_i, x_j; \eta)$ also incurs a time complexity of $\Oc(N^2)$.
 By applying a similar truncated Gaussian kernel approximation, the runtime can
 be reduced to $\Oc(N)$.
+
+
+\section{Experiment Details}
+
+
+\subsection{Dataset Description}
+
+
+The dataset used in this research is the Harmful Brain Activity Classification
+(HMS) dataset~\citep{jing2023development}, provided by Harvard Medical School
+for research purposes. This dataset comprises EEG recordings and their
+corresponding spectrograms, segmented into 50-second-long samples derived from
+10-minute windows of brain activity.
+The longer 10-minute window allows for the model to pick up on further insights
+regarding the nature of the brain activity. Each EEG sample, representing 50
+seconds of brain activity measured by 19 scalp electrodes, is paired with a
+matching spectrogram.
+The EEG samples were labeled by expert annotators from Critical Care EEG
+Monitoring Research Consortium (CCEMRC) into one of six types of brain
+activity: seizures, generalized periodic discharges (GPD), lateralized
+periodic discharges (LPD), lateralized rhythmic delta activity (LRDA),
+generalized rhythmic delta activity (GRDA), and other.
+
+
+Expert agreement was high for some segments; nevertheless, instances of
+disagreement were observed. The segments were categorized as follows:
+\begin{enumerate*}[label = (\roman*)]
+\item ``Idealized'': Segments with high levels of expert agreement.
+\item ``Proto'': Segments where approximately half of the experts labeled them
+as ``other'', while the other half assigned one of the remaining five labels.
+\item ``edge'': Segments where experts were roughly split between two of the
+five named patterns.
+\end{enumerate*}
+Figure~\ref{fig:ex} shows an example of EEG patterns with different level of
+agreement.
+
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=.48\textwidth]{example}
+\caption{Examples of EEG patterns with different levels of expert agreement,
+sourced from the HMS dataset.}
+\label{fig:ex}
+\end{figure}
+
+
+\subsection{Data Preparation}
+
+
+The data preparation process involves multiple steps to extract spectrogram
+features from EEG data, enhance signal quality, and ensure the features are
+appropriately scaled and normalized for analysis.
+
+
+\textbf{Wavelet denoising}: EEG signals were denoised using wavelet
+transformation to improve signal quality by decomposing the signal into wavelet
+coefficients, applying thresholding to remove noise, and reconstructing the
+denoised signal.
+%via \pkg{pywt} \proglang{Python} package
+
+
+\textbf{Feature Extraction}: A bipolar montage technique is applied to the
+denoised EEG signals to calculate the difference between adjacent electrode
+signals, generating four representative montage features from the original 19
+features. Figure~\ref{fig:inion} illustrates the bipolar electrode chains used
+in this study.
+
+
+\textbf{Spectrogram transformation}: The denoised EEG signals are converted
+into Mel-spectrograms, which are log-transformed to enhance spectral
+information and compress the dynamic range. Figure~\ref{fig:EEG} shows an
+example of the denoised EEG signal and its corresponding transformated
+spectrogram.
+%using the \pkg{librosa} \proglang{Python} package
+
+
+\textbf{Normalizatio}n: The Mel-spectrogram values are standardized to a range
+of $[-1,1]$ to ensure consistent feature scaling and facilitate model training.
+
+
+\textbf{Imputation}: Missing values in the data are imputed with the mean of
+non-missing values within each spectrogram. If all values are missing,
+the spectrogram is set to zero to maintain data consistency.
+
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=.45\textwidth]{inion}
+\caption{Chains employed to determine representative montage features via
+a bipolar montage, sourced from Kaggle.}
+\label{fig:inion}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{EEG_Signal}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{EEG_Spectrogram}
+\end{subfigure}
+\caption{An example of the denoised EEG signal (top) and its corresponding
+	spectrogram representation (bottom).}
+\label{fig:EEG}
+\end{figure}
+
+
+\subsection{Loss Function}
+
+
+The model outputs an array of predicted probabilities for each label class.
+To evaluate its performance, the Kullback-Leibler (KL) divergence metric is
+employed. This metric is suitable for comparing two probability distributions: 
+the ground truth probability distribution $\XX$ and the predicted probability
+distribution $\YY$. The KL divergence between these two distributions is
+defined as:
+\begin{equation*}
+D_\mathrm{KL}(\XX \Vert \YY) = \sum \XX \log\left(\frac{\XX}{\YY}\right)
+\end{equation*}
+
+
+The KL divergence offers the advantage of direct applicability as a loss
+function during model training, eliminating the need for an alternative loss
+function. Its differentiability enables efficient gradient-based optimization
+techniques.
+
+
+\subsection{Learning Rate Scheduler}
+
+
+To optimize the model's training process, a cosine annealing learning rate
+scheduler was employed. This technique ensures a smooth and gradual decrease in
+the learning rate, preventing abrupt changes that can destabilize the training
+process. By allowing the model to explore a wider parameter space initially and
+then refining its solution towards the end, cosine annealing contributes to
+better convergence and reduced oscillations in the loss function.
+
+
+As depicted in Figure~\ref{fig:cos}, the learning rate for both the pre-trained
+UNet and the fine-tuned HCRF exhibit a similar pattern. Both start with a
+relatively high learning rate, which gradually decreases over time.
+This smooth decay helps ensure stable training and optimal convergence.
+
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{pretrain}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.45\textwidth}
+\includegraphics[width=\textwidth]{finetune}
+\end{subfigure}
+\caption{The learning rate schedulers for the pre-trained UNet (top) and
+the fine-tuned HCRF (bottom).}
+\label{fig:cos}
+\end{figure}
 
 
 \section{Results}
